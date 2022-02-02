@@ -641,7 +641,10 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 	case WM_PALETTECHANGED:
 		InvalidateRect(hWnd, nullptr, 0);
 		return DefWindowProcA(hWnd, Msg, wParam, lParam);
-	case WM_POINTERDEVICEINRANGE | LB_ADDSTRING:
+#if WINVER >= 0x0602
+	case WM_POINTERDEVICEINRANGE:
+#endif
+	case LB_ADDSTRING:
 		if (wParam == 1)
 			midi::restart_midi_seq(lParam);
 		return DefWindowProcA(hWnd, Msg, wParam, lParam);

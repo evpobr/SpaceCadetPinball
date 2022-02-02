@@ -9,6 +9,8 @@
 #include "TLine.h"
 #include "TPinballTable.h"
 
+using namespace std;
+
 TEdgeManager* TTableLayer::edge_manager;
 
 TTableLayer::TTableLayer(TPinballTable* table): TCollisionComponent(table, -1, false)

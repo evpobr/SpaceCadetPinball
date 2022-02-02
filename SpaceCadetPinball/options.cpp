@@ -189,7 +189,8 @@ int options::get_int(LPCSTR optPath, LPCSTR lpValueName, int defaultValue)
 {
 	DWORD dwDisposition;	
 
-	HKEY result = (HKEY)defaultValue, Data = (HKEY)defaultValue;
+	HKEY result = NULL;
+	DWORD Data = 0;
 	if (!OptionsRegPath)
 		return defaultValue;
 	LPCSTR regPath = path(optPath);

@@ -263,3 +263,7 @@ __pycache__/
 /Export
 /DrMem
 /Doc private
+
+./vs*/
+
+*[Bb]uild*/

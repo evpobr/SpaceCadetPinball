@@ -1924,7 +1924,7 @@ void control::GravityWellKickoutControl(int code, TPinballComponent* caller)
 		}
 	case 64:
 		{
-			auto score = reinterpret_cast<int>(caller);
+			auto score = reinterpret_cast<uintptr_t>(caller);
 			if (score)
 			{
 				sprintf_s(Buffer, pinball::get_rc_string(82, 0), score);

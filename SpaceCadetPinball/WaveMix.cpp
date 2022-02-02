@@ -3,6 +3,8 @@
 
 #include "pinball.h"
 
+using namespace std;
+
 int WaveMix::initialized_flag;
 char WaveMix::FileName[276];
 CHANNELNODE WaveMix::channel_nodes[MAXQUEUEDWAVES];

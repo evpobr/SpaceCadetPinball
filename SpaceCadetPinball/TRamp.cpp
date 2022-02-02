@@ -11,6 +11,7 @@
 #include "TPinballTable.h"
 #include "TTableLayer.h"
 
+using namespace std;
 
 TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, groupIndex, false)
 {
@@ -46,7 +47,7 @@ TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, 
 	EdgeList->Add(Line1);
 	if (Line1)
 	{
-		Line1->WallValue = nullptr;
+		Line1->WallValue = 0;
 		Line1->place_in_grid();
 	}
 
@@ -64,7 +65,7 @@ TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, 
 	EdgeList->Add(Line2);
 	if (Line2)
 	{
-		Line2->WallValue = nullptr;
+		Line2->WallValue = 0;
 		Line2->place_in_grid();
 	}
 
@@ -82,7 +83,7 @@ TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, 
 	EdgeList->Add(Line3);
 	if (Line3)
 	{
-		Line3->WallValue = nullptr;
+		Line3->WallValue = 0;
 		Line3->place_in_grid();
 	}
 
@@ -129,7 +130,7 @@ TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, 
 				EdgeList->Add(line);
 				if (line)
 				{
-					line->WallValue = plane;
+					line->WallValue = reinterpret_cast<intptr_t>(plane);
 					line->place_in_grid();
 				}
 			}
@@ -170,7 +171,7 @@ void TRamp::Collision(TBall* ball, vector_type* nextPosition, vector_type* direc
 	ball->Position.Y = nextPosition->Y;
 	ball->RayMaxDistance -= coef;
 
-	auto plane = static_cast<ramp_plane_type*>(edge->WallValue);
+	auto plane = reinterpret_cast<ramp_plane_type*>(edge->WallValue);
 	if (plane)
 	{
 		ball->CollisionFlag = 1;
