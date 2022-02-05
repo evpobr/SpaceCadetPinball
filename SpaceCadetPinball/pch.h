@@ -17,6 +17,7 @@
 #include <CommCtrl.h>
 #include <htmlhelp.h>
 #include <type_traits> /*For control template*/
+#include <algorithm>
 //#include <cstdlib>
 
 /*Use (void) to silent unused warnings.*/
