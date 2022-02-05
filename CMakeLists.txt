@@ -135,5 +135,4 @@ add_executable(pinball WIN32
     SpaceCadetPinball/zdrv.cpp
     SpaceCadetPinball/zdrv.h
 )
-target_compile_definitions(pinball PRIVATE NOMINMAX)
 target_link_libraries(pinball comctl32 htmlhelp winmm)
