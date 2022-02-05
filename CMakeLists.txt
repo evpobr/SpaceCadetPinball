@@ -136,3 +136,6 @@ add_executable(pinball WIN32
     SpaceCadetPinball/zdrv.h
 )
 target_link_libraries(pinball comctl32 htmlhelp winmm)
+if(NOT CMAKE_VERSION VERSION_LESS 3.16)
+    target_precompile_headers(pinball PRIVATE SpaceCadetPinball/pch.h)
+endif()
