@@ -34,7 +34,7 @@ splash_struct* splash::splash_screen(HINSTANCE hInstance, LPCSTR bmpName1, LPCST
 		RegisterClassA(&WndClass);
 	}
 	splashStruct->Bitmap = nullptr;
-	HWND windowHandle = CreateWindowExA(0, "3DPB_SPLASH_CLASS", pinball::WindowName, 0x80000000, -10, -10, 1, 1,
+	HWND windowHandle = CreateWindowExA(0, "3DPB_SPLASH_CLASS", pinball::WindowName, WS_POPUP, -10, -10, 1, 1,
 	                                    nullptr, nullptr, HInstance, nullptr);
 	splashStruct->WindowHandle = windowHandle;
 	if (!windowHandle)
