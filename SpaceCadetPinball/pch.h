@@ -20,6 +20,7 @@
 #include <htmlhelp.h>
 #include <type_traits> /*For control template*/
 #include <algorithm>
+#include <vector>
 //#include <cstdlib>
 
 /*Use (void) to silent unused warnings.*/

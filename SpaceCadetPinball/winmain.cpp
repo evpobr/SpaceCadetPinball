@@ -212,7 +212,7 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 					{
 						if (!gfr_display.BmpBufPtr1)
 						{
-							auto plt = static_cast<PALETTEENTRY*>(malloc(1024u));
+							std::vector<PALETTEENTRY> plt(1024u);
 							auto pltPtr = &plt[10];
 							for (int i1 = 0, i2 = 0; i1 < 256 - 10; ++i1, i2 += 8)
 							{
@@ -225,8 +225,7 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 								*pltPtr++ = {redGreen, redGreen, blue};
 							}
-							gdrv::display_palette(plt);
-							free(plt);
+							gdrv::display_palette(plt.data());
 							gdrv::create_bitmap(&gfr_display, 400, 15);
 						}
 
