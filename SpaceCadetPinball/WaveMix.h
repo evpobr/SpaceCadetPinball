@@ -160,7 +160,6 @@ private:
 	static void InitChannelNodes();
 	static void InitVolumeTable();
 	static void ShowWaveOutDevices();
-	static int RemoveInvalidIniNameCharacters(char* lpString);
 	static int ReadConfigSettings(MIXCONFIG* lpConfig);
 	static int ReadRegistryForAppSpecificConfigs(MIXCONFIG* lpConfig);
 	static int ReadRegistryInt(HKEY hKey, LPCSTR lpSubKey, int defaultValue);

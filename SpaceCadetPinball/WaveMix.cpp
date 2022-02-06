@@ -921,7 +921,7 @@ void WaveMix::ShowWaveOutDevices()
 		MessageBoxA(nullptr, string_buffer, "WavMix32", 0x40u);
 		for (auto uDeviceID = 0u; uDeviceID < deviceCount; ++uDeviceID)
 		{
-			if (!waveOutGetDevCapsA(uDeviceID, &pwoc, 0x34u) && RemoveInvalidIniNameCharacters(pwoc.szPname))
+			if (!waveOutGetDevCapsA(uDeviceID, &pwoc, 0x34u))
 				wsprintfA(
 					string_buffer,
 					"Device %i: %s\n\tVersion %u.%u",
@@ -934,25 +934,6 @@ void WaveMix::ShowWaveOutDevices()
 			MessageBoxA(nullptr, string_buffer, "WavMix32", 0x40u);
 		}
 	}
-}
-
-int WaveMix::RemoveInvalidIniNameCharacters(char* lpString)
-{
-	auto stringPtr = lpString;
-	if (!lpString || !*lpString)
-		return 0;
-	do
-	{
-		if (!isalnum(*stringPtr) && !isspace(*stringPtr))
-			break;
-		++stringPtr;
-	}
-	while (*stringPtr);
-
-	do
-		*stringPtr-- = 0;
-	while (stringPtr >= lpString && isspace(*stringPtr));
-	return lstrlenA(lpString);
 }
 
 int WaveMix::ReadConfigSettings(MIXCONFIG* lpConfig)
@@ -979,8 +960,7 @@ int WaveMix::ReadConfigSettings(MIXCONFIG* lpConfig)
 	if (Globals->wDeviceID >= waveDeviceCount)
 		Globals->wDeviceID = 0;
 
-	if (waveOutGetDevCapsA(Globals->wDeviceID, &Globals->WaveoutCaps, 0x34u)
-		|| !RemoveInvalidIniNameCharacters(Globals->WaveoutCaps.szPname))
+	if (waveOutGetDevCapsA(Globals->wDeviceID, &Globals->WaveoutCaps, 0x34u))
 	{
 		lstrcpyA(Globals->WaveoutCaps.szPname, "Unkown Device");
 	}
@@ -1228,8 +1208,7 @@ int WaveMix::Configure(GLOBALS* hMixSession, HWND hWndParent, MIXCONFIG* lpConfi
 				Globals->PCM.wf.nAvgBytesPerSec = Globals->PCM.wf.nSamplesPerSec;
 			}
 			lstrcpyA(globals->szDevicePName, pwoc.szPname);
-			if (!RemoveInvalidIniNameCharacters(Globals->szDevicePName))
-				lstrcpyA(Globals->szDevicePName, "Unkown Device");
+			lstrcpyA(Globals->szDevicePName, "Unkown Device");
 			if (!ReadRegistryToGetMachineSpecificInfSection(Globals->wDeviceID, Globals->szDevicePName, 96))
 			{
 				lstrcpyA(Globals->szDevicePName, GetOperatingSystemPrefix());
@@ -2023,7 +2002,7 @@ void WaveMix::ShowCurrentSettings()
 {
 	tagWAVEOUTCAPSA pwoc{};
 
-	if (waveOutGetDevCapsA(Globals->wDeviceID, &pwoc, 0x34u) || !RemoveInvalidIniNameCharacters(pwoc.szPname))
+	if (waveOutGetDevCapsA(Globals->wDeviceID, &pwoc, 0x34u))
 		lstrcpyA(pwoc.szPname, "Unknown Device");
 	auto cmixitType = "cmixit";
 	if (Globals->CmixPtr != cmixit)
