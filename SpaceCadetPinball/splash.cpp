@@ -43,7 +43,7 @@ splash_struct* splash::splash_screen(HINSTANCE hInstance, LPCSTR bmpName1, LPCST
 		return nullptr;
 	}
 
-	SetWindowLongPtrA(windowHandle, -21, reinterpret_cast<LONG_PTR>(splashStruct));
+	SetWindowLongPtrA(windowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(splashStruct));
 	GetWindowRect(GetDesktopWindow(), &Rect);
 	splash_bitmap_setup(splashStruct);
 	//MoveWindow(splashStruct->WindowHandle, 0, 0, Rect.right - Rect.left, Rect.bottom - Rect.top, 0);
