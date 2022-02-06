@@ -274,7 +274,7 @@ LRESULT splash::splash_message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LPARA
 	{
 	case WM_PAINT:
 		{
-			auto splashStruct = reinterpret_cast<splash_struct*>(GetWindowLongPtrA(hWnd, -21));
+			auto splashStruct = reinterpret_cast<splash_struct*>(GetWindowLongPtrA(hWnd, GWLP_USERDATA));
 			BeginPaint(hWnd, &Paint);
 			EndPaint(hWnd, &Paint);
 			auto dc = GetDC(hWnd);
