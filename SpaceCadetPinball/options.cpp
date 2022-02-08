@@ -245,11 +245,11 @@ void options::set_string(LPCSTR optPath, LPCSTR lpValueName, LPCSTR value)
 	if (OptionsRegPath)
 	{
 		const CHAR* regPath = path(optPath);
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, (PHKEY)&optPath,
+		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, (PHKEY)&optPath,
 		                     &dwDisposition))
 		{
 			int v4 = lstrlenA(value);
-			RegSetValueExA((HKEY)optPath, lpValueName, 0, 1u, (const BYTE*)value, v4 + 1);
+			RegSetValueExA((HKEY)optPath, lpValueName, 0, REG_SZ, (const BYTE*)value, v4 + 1);
 			RegCloseKey((HKEY)optPath);
 		}
 		path_free();
