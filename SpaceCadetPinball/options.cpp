@@ -229,7 +229,7 @@ void options::get_string(LPCSTR optPath, LPCSTR lpValueName, LPSTR lpString1, LP
 		const CHAR* regPath = path(optPath);
 		HKEY hkResult;
 		if (RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &hkResult,
-		                     (LPDWORD)&optPath))
+		                     (LPDWORD)&optPath) == ERROR_SUCCESS)
 		{
 			RegQueryValueExA(hkResult, lpValueName, nullptr, nullptr, (LPBYTE)lpString1, (LPDWORD)&lpString2);
 			RegCloseKey(hkResult);
@@ -246,8 +246,8 @@ void options::set_string(LPCSTR optPath, LPCSTR lpValueName, LPCSTR value)
 	{
 		const CHAR* regPath = path(optPath);
 		HKEY hkResult;
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &hkResult,
-		                     &dwDisposition))
+		if (RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &hkResult,
+		                    &dwDisposition) == ERROR_SUCCESS)
 		{
 			int v4 = lstrlenA(value);
 			RegSetValueExA(hkResult, lpValueName, 0, REG_SZ, (const BYTE*)value, v4 + 1);
