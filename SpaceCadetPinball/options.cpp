@@ -227,11 +227,12 @@ void options::get_string(LPCSTR optPath, LPCSTR lpValueName, LPSTR lpString1, LP
 	if (OptionsRegPath)
 	{
 		const CHAR* regPath = path(optPath);
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, (PHKEY)&iMaxLength,
+		HKEY hkResult;
+		if (RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, &hkResult,
 		                     (LPDWORD)&optPath))
 		{
-			RegQueryValueExA((HKEY)iMaxLength, lpValueName, nullptr, nullptr, (LPBYTE)lpString1, (LPDWORD)&lpString2);
-			RegCloseKey((HKEY)iMaxLength);
+			RegQueryValueExA(hkResult, lpValueName, nullptr, nullptr, (LPBYTE)lpString1, (LPDWORD)&lpString2);
+			RegCloseKey(hkResult);
 		}
 		path_free();
 	}
