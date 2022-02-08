@@ -228,7 +228,7 @@ void options::get_string(LPCSTR optPath, LPCSTR lpValueName, LPSTR lpString1, LP
 	{
 		const CHAR* regPath = path(optPath);
 		HKEY hkResult;
-		if (RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, &hkResult,
+		if (RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &hkResult,
 		                     (LPDWORD)&optPath))
 		{
 			RegQueryValueExA(hkResult, lpValueName, nullptr, nullptr, (LPBYTE)lpString1, (LPDWORD)&lpString2);
