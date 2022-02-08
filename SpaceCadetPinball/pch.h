@@ -20,6 +20,7 @@
 #include <htmlhelp.h>
 #include <type_traits> /*For control template*/
 #include <algorithm>
+#include <string>
 #include <vector>
 //#include <cstdlib>
 
