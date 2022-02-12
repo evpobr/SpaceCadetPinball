@@ -1853,7 +1853,7 @@ int WaveMix::Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig
 		}
 		while (uDeviceID < deviceCount);
 	}
-	SendMessageA(GetDlgItem(hWnd, 1009), 0x14Eu, lpMixconfig->wDeviceID, 0);
+	SendMessageA(GetDlgItem(hWnd, 1009), CB_SETCURSEL, lpMixconfig->wDeviceID, 0);
 	return 1;
 }
 
