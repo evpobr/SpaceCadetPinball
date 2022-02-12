@@ -1864,11 +1864,11 @@ int WaveMix::Settings_OnCommand(HWND hWnd, int command, int lParam, int wParam)
 	{
 		if (userData)
 		{
-			userData->wChannels = (SendMessageA(GetDlgItem(hWnd, 1000), 0xF0u, 0, 0) != 0) + 1;
-			userData->ResetMixDefaultFlag = SendMessageA(GetDlgItem(hWnd, 1001), 0xF0u, 0, 0) != 0;
-			userData->GoodWavePos = SendMessageA(GetDlgItem(hWnd, 1004), 0xF0u, 0, 0) != 0;
-			userData->ShowDebugDialogs = SendMessageA(GetDlgItem(hWnd, 1010), 0xF0u, 0, 0) != 0;
-			userData->CmixPtrDefaultFlag = SendMessageA(GetDlgItem(hWnd, 1005), 0xF0u, 0, 0) != 0;
+			userData->wChannels = (SendMessageA(GetDlgItem(hWnd, 1000), BM_GETCHECK, 0, 0) != 0) + 1;
+			userData->ResetMixDefaultFlag = SendMessageA(GetDlgItem(hWnd, 1001), BM_GETCHECK, 0, 0) != 0;
+			userData->GoodWavePos = SendMessageA(GetDlgItem(hWnd, 1004), BM_GETCHECK, 0, 0) != 0;
+			userData->ShowDebugDialogs = SendMessageA(GetDlgItem(hWnd, 1010), BM_GETCHECK, 0, 0) != 0;
+			userData->CmixPtrDefaultFlag = SendMessageA(GetDlgItem(hWnd, 1005), BM_GETCHECK, 0, 0) != 0;
 			GetWindowTextA(GetDlgItem(hWnd, 1003), string_buffer, 10);
 			userData->WaveBlockCount = atoi(string_buffer);
 			GetWindowTextA(GetDlgItem(hWnd, 1007), string_buffer, 10);
