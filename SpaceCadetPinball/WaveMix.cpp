@@ -264,7 +264,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		return nullptr;
 	}
 
-	auto mixWave = static_cast<MIXWAVE*>(GlobalLock(GlobalAlloc(0x2040u, sizeof(MIXWAVE))));
+	auto mixWave = static_cast<MIXWAVE*>(GlobalLock(GlobalAlloc(GMEM_SHARE | GMEM_ZEROINIT, sizeof(MIXWAVE))));
 	if (!mixWave)
 	{
 		if (ShowDebugDialogs)
