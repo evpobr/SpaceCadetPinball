@@ -1859,7 +1859,7 @@ int WaveMix::Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig
 
 int WaveMix::Settings_OnCommand(HWND hWnd, int command, int lParam, int wParam)
 {
-	auto userData = reinterpret_cast<MIXCONFIG*>(GetWindowLongPtrA(hWnd, -21));
+	auto userData = reinterpret_cast<MIXCONFIG*>(GetWindowLongPtrA(hWnd, GWLP_USERDATA));
 	if (command == 1)
 	{
 		if (userData)
