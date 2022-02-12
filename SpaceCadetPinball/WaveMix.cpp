@@ -257,7 +257,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 	pwfx.nBlockAlign = globals->PCM.wf.nBlockAlign;
 	pwfx.wBitsPerSample = globals->PCM.wBitsPerSample;
 	pwfx.cbSize = 0;
-	if (waveOutOpen(&phwo, 0xFFFFFFFF, &pwfx, 0, 0, 1u))
+	if (waveOutOpen(&phwo,  WAVE_MAPPER, &pwfx, 0, 0, WAVE_FORMAT_QUERY))
 	{
 		if (ShowDebugDialogs)
 			MessageBoxA(nullptr, "The waveform device can't play this format.", "WavMix32", 0x30u);
