@@ -337,7 +337,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		}
 		else
 		{
-			hMmio = mmioOpenA(const_cast<LPSTR>(szWaveFilename), nullptr, 0x10000u);
+			hMmio = mmioOpenA(const_cast<LPSTR>(szWaveFilename), nullptr, MMIO_ALLOCBUF);
 			if (!hMmio)
 			{
 				if (ShowDebugDialogs)
