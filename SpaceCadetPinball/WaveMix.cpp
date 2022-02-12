@@ -264,7 +264,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		return nullptr;
 	}
 
-	auto mixWave = static_cast<MIXWAVE*>(GlobalLock(GlobalAlloc(GMEM_SHARE | GMEM_ZEROINIT, sizeof(MIXWAVE))));
+	auto mixWave = reinterpret_cast<MIXWAVE*>(HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MIXWAVE)));
 	if (!mixWave)
 	{
 		if (ShowDebugDialogs)
@@ -446,8 +446,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 
 	if (hMmio)
 		mmioClose(hMmio, 0);
-	GlobalUnlock(GlobalHandle(mixWave));
-	GlobalFree(GlobalHandle(mixWave));
+	HeapFree(GetProcessHeap(), 0, mixWave);
 	if (wavBuffer3)
 	{
 		GlobalUnlock(GlobalHandle(wavBuffer3));
@@ -506,8 +505,7 @@ int WaveMix::FreeWave(HANDLE hMixSession, MIXWAVE* lpMixWave)
 		GlobalFree(GlobalHandle(lpMixWave->wh.lpData));
 	}
 	lpMixWave->wMagic = 0;
-	GlobalUnlock(GlobalHandle(lpMixWave));
-	GlobalFree(GlobalHandle(lpMixWave));
+	HeapFree(GetProcessHeap(), 0, lpMixWave);
 	return 0;
 }
 
@@ -1802,7 +1800,7 @@ int WaveMix::Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig
 	GetWindowTextA(hWnd, String, 256);
 	wsprintfA(string_buffer, String, 2, 81);
 	SetWindowTextA(hWnd, string_buffer);
-	SetWindowLongPtr(hWnd, -21, reinterpret_cast<LONG_PTR>(lpMixconfig));
+	SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(lpMixconfig));
 	SendMessageA(GetDlgItem(hWnd, 1000), 0xF1u, lpMixconfig->wChannels > 1u, 0);
 	SendMessageA(GetDlgItem(hWnd, 1001), 0xF1u, lpMixconfig->ResetMixDefaultFlag != 0, 0);
 	SendMessageA(GetDlgItem(hWnd, 1004), 0xF1u, lpMixconfig->GoodWavePos != 0, 0);
