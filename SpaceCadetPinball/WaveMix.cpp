@@ -272,7 +272,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 				nullptr,
 				"Unable to allocate memory for waveform data.  Try making more memory available by closing other applications.",
 				"WavMix32",
-				0x40u);
+				MB_ICONASTERISK);
 		return nullptr;
 	}
 
