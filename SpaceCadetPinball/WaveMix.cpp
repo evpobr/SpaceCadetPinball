@@ -2040,7 +2040,7 @@ unsigned WaveMix::GetWaveDevice()
 
 	if (Globals->hWaveOut)
 		return 0;
-	HWND window = CreateWindowExA(0, "WavMix32", pinball::WindowName, 0x8000000u, 0, 0, 0, 0, nullptr, nullptr, HModule,
+	HWND window = CreateWindowExA(0, "WavMix32", pinball::WindowName, WS_DISABLED, 0, 0, 0, 0, nullptr, nullptr, HModule,
 	                              nullptr);
 	GLOBALS* globals = Globals;
 	Globals->hWndApp = window;
