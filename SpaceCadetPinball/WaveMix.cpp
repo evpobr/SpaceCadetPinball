@@ -2057,9 +2057,9 @@ unsigned WaveMix::GetWaveDevice()
 	pwfx.nBlockAlign = globals->PCM.wf.nBlockAlign;
 	pwfx.wBitsPerSample = globals->PCM.wBitsPerSample;
 	pwfx.cbSize = 0;
-	unsigned int openResult = waveOutOpen(&globals->hWaveOut, 0xFFFFFFFF, &pwfx,
+	unsigned int openResult = waveOutOpen(&globals->hWaveOut, WAVE_MAPPER, &pwfx,
 	                                      reinterpret_cast<DWORD_PTR>(globals->hWndApp), 0,
-	                                      0x10000u);
+	                                      CALLBACK_WINDOW);
 	if (openResult)
 	{
 		DestroyWindow(Globals->hWndApp);
