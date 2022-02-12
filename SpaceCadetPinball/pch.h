@@ -13,6 +13,7 @@
 
 // TODO: add headers that you want to pre-compile here
 #include <Windows.h>
+#include <windowsx.h>
 #include <cstdio>
 #include <cassert>
 #include <cmath>
