@@ -1838,7 +1838,7 @@ int WaveMix::Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig
 	{
 		do
 		{
-			MMRESULT getResult = waveOutGetDevCapsA(uDeviceID, &pwoc, 0x34u);
+			MMRESULT getResult = waveOutGetDevCapsA(uDeviceID, &pwoc, sizeof(WAVEOUTCAPS));
 			if (getResult)
 			{
 				wsprintfA(string_buffer, "waveOutGetDevCaps failed (err %u) for device %d", getResult, uDeviceID);
