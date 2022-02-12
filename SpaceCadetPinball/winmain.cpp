@@ -444,7 +444,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		case VK_ESCAPE:
 			if (options::Options.FullScreen)
 				options::toggle(0x193u);
-			SendMessageA(hwnd_frame, 0x112u, 0xF020u, 0);
+			SendMessageA(hwnd_frame, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 			break;
 		case VK_F1:
 			help_introduction(hinst, hWnd);
