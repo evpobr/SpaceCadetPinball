@@ -393,7 +393,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 			break;
 		}
 
-		auto lpData = static_cast<HPSTR>(GlobalLock(GlobalAlloc(0x2002u, pmmFmt.cksize)));
+		auto lpData = static_cast<HPSTR>(GlobalLock(GlobalAlloc(GMEM_SHARE | GMEM_MOVEABLE, pmmFmt.cksize)));
 		if (!lpData)
 		{
 			if (ShowDebugDialogs)
