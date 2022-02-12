@@ -2031,7 +2031,7 @@ void WaveMix::ShowCurrentSettings()
 		Globals->PCM.wf.nSamplesPerSec,
 		Globals->PCM.wf.nChannels,
 		Globals->PauseBlocks);
-	MessageBoxA(nullptr, string_buffer, "WavMix32", 0x40u);
+	MessageBoxA(nullptr, string_buffer, "WavMix32", MB_ICONINFORMATION);
 }
 
 unsigned WaveMix::GetWaveDevice()
