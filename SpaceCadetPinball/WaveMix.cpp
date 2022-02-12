@@ -1847,7 +1847,7 @@ int WaveMix::Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig
 			else
 			{
 				wsprintfA(string_buffer, "%d: %s", uDeviceID, pwoc.szPname);
-				SendMessageA(GetDlgItem(hWnd, 1009), 0x143u, 0, (LPARAM)string_buffer);
+				SendMessageA(GetDlgItem(hWnd, 1009), CB_ADDSTRING, 0, (LPARAM)string_buffer);
 			}
 			++uDeviceID;
 		}
