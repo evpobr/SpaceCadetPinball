@@ -350,7 +350,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		}
 
 		pmmcki.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-		if (mmioDescend(hMmio, &pmmcki, nullptr, 0x20u))
+		if (mmioDescend(hMmio, &pmmcki, nullptr, MMIO_FINDRIFF))
 		{
 			if (ShowDebugDialogs)
 				MessageBoxA(nullptr, "This is not a WAVE file.", "WavMix32", MB_ICONWARNING);
@@ -358,7 +358,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		}
 
 		pmmFmt.ckid = mmioFOURCC('f', 'm', 't', ' ');
-		if (mmioDescend(hMmio, &pmmFmt, &pmmcki, 0x10u))
+		if (mmioDescend(hMmio, &pmmFmt, &pmmcki, MMIO_FINDCHUNK))
 		{
 			if (ShowDebugDialogs)
 				MessageBoxA(nullptr, "WAVE file is corrupted.", "WavMix32", MB_ICONWARNING);
@@ -379,7 +379,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 
 		mmioAscend(hMmio, &pmmFmt, 0);
 		pmmFmt.ckid = mmioFOURCC('d', 'a', 't', 'a');
-		if (mmioDescend(hMmio, &pmmFmt, &pmmcki, 0x10u))
+		if (mmioDescend(hMmio, &pmmFmt, &pmmcki, MMIO_FINDCHUNK))
 		{
 			if (ShowDebugDialogs)
 				MessageBoxA(nullptr, "WAVE file has no data chunk.", "WavMix32", MB_ICONWARNING);
