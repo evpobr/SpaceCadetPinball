@@ -535,7 +535,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 					auto iHwnd = reinterpret_cast<size_t>(hwnd_frame);
 					sprintf_s(
 						cmdLine,
-						"%s %s%lX  %s%lX",
+						"%s %s%zu  %s%zu",
 						tmpBuf,
 						"select=",
 						iHwnd,
