@@ -129,7 +129,7 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return 0;
 
 	INITCOMMONCONTROLSEX picce;
-	picce.dwSize = 8;
+	picce.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	picce.dwICC = 5885;
 	InitCommonControlsEx(&picce);
 
