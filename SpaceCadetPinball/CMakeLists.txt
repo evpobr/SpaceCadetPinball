@@ -18,7 +18,6 @@ add_executable(pinball WIN32
     render.cpp
     score.cpp
     Sound.cpp
-    SpaceCadetPinball.cpp
     splash.cpp
     TBall.cpp
     TBlocker.cpp
