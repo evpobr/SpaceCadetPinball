@@ -17,7 +17,7 @@ public:
 	static int RightShift;
 	static int LeftShift;
 
-	static char* get_rc_string(int uID, int a2);
+	static const char* get_rc_string(int uID, int a2);
 	static int get_rc_int(int uID, int* dst);
 	static void FindShiftKeys();
 	static void adjust_priority(int priority);

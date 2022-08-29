@@ -333,7 +333,7 @@ void pb::pause_continue()
 			MainTable->Message(1009, 0.0);
 		if (!demo_mode)
 		{
-			char* text;
+			const char* text;
 			float textTime;
 			if (game_mode == 2)
 			{

@@ -2367,7 +2367,7 @@ void control::MedalTargetControl(int code, TPinballComponent* caller)
 		{
 			MedalLightGroupControl(41, control_bumber_target_lights_tag.Component);
 			int activeCount = control_bumber_target_lights_tag.Component->Message(37, 0.0) - 1;
-			char* text;
+			const char* text;
 			switch (activeCount)
 			{
 			case 0:
@@ -2408,7 +2408,7 @@ void control::MultiplierTargetControl(int code, TPinballComponent* caller)
 			TableG->AddScore(caller->get_scoring(1));
 			MultiplierLightGroupControl(41, control_top_target_lights_tag.Component);
 			int activeCount = control_top_target_lights_tag.Component->Message(37, 0.0);
-			char* text;
+			const char* text;
 			switch (activeCount)
 			{
 			case 1:
@@ -2457,7 +2457,7 @@ void control::BallDrainControl(int code, TPinballComponent* caller)
 			{
 				control_soundwave3_tag.Component->Play();
 				TableG->LightGroup->Message(16, 3.0);
-				char* v11 = pinball::get_rc_string(177, 0);
+				const char* v11 = pinball::get_rc_string(177, 0);
 				control_mission_text_box_tag.Component->Display(v11, -1.0);
 			}
 		}
@@ -2513,7 +2513,7 @@ void control::BallDrainControl(int code, TPinballComponent* caller)
 				{
 					TableG->ExtraBalls--;
 
-					char* shootAgainText;
+					const char* shootAgainText;
 					control_soundwave59_tag.Component->Play();
 					switch (TableG->CurrentPlayer)
 					{
@@ -3802,7 +3802,7 @@ void control::SecretMissionGreenController(int code, TPinballComponent* caller)
 		{
 			return;
 		}
-		char* v2 = pinball::get_rc_string(144, 0);
+		const char* v2 = pinball::get_rc_string(144, 0);
 		control_mission_text_box_tag.Component->Display(v2, -1.0);
 		return;
 	}
@@ -4137,7 +4137,7 @@ void control::SpaceRadiationController(int code, TPinballComponent* caller)
 		}
 		else if (code == 67)
 		{
-			char* text;
+			const char* text;
 			if (control_lite104_tag.Component->MessageField == 15)
 				text = pinball::get_rc_string(120, 0);
 			else
@@ -4190,7 +4190,7 @@ void control::StrayCometController(int code, TPinballComponent* caller)
 		}
 		else if (code == 67)
 		{
-			char* text;
+			const char* text;
 			if (control_lite107_tag.Component->MessageField == 15)
 				text = pinball::get_rc_string(118, 0);
 			else

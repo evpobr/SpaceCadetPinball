@@ -106,7 +106,7 @@ void TTextBox::Clear()
 	}
 }
 
-void TTextBox::Display(char* text, float time)
+void TTextBox::Display(const char* text, float time)
 {
 	if (!text)
 		return;

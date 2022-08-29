@@ -687,8 +687,8 @@ void winmain::memalloc_failure()
 	midi::music_stop();
 	Sound::Close();
 	gdrv::uninit();
-	char* caption = pinball::get_rc_string(170, 0);
-	char* text = pinball::get_rc_string(179, 0);
+	const char* caption = pinball::get_rc_string(170, 0);
+	const char* text = pinball::get_rc_string(179, 0);
 	MessageBoxA(nullptr, text, caption, 0x2030u);
 	_exit(1);
 }

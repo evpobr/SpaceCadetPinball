@@ -328,7 +328,7 @@ void TPinballTable::port_draw()
 
 int TPinballTable::Message(int code, float value)
 {
-	LPSTR rc_text;
+	const char* rc_text;
 	switch (code)
 	{
 	case 1000:
@@ -477,7 +477,7 @@ int TPinballTable::Message(int code, float value)
 		{
 			if (PlayerCount <= 1)
 			{
-				char* textboxText;
+				const char* textboxText;
 				if (Demo->ActiveFlag)
 					textboxText = pinball::get_rc_string(30, 0);
 				else
@@ -518,7 +518,7 @@ int TPinballTable::Message(int code, float value)
 				static_cast<TPinballComponent*>(ComponentList->Get(i))->Message(1020, static_cast<float>(nextPlayer));
 			}
 
-			char* textboxText = nullptr;
+			const char* textboxText = nullptr;
 			switch (nextPlayer)
 			{
 			case 0:

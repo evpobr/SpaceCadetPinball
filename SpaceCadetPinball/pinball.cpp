@@ -13,7 +13,7 @@ char pinball::WindowName[2]{};
 int pinball::LeftShift = -1;
 int pinball::RightShift = -1;
 
-char* pinball::get_rc_string(int uID, int a2)
+const char* pinball::get_rc_string(int uID, int a2)
 {
 	char* result = &getRcBuffer[256 * rc_string_slot];
 	if (!LoadStringA(winmain::hinst, uID, &getRcBuffer[256 * rc_string_slot], 255))
