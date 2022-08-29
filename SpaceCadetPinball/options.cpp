@@ -205,16 +205,20 @@ int options::get_int(LPCSTR optPath, LPCSTR lpValueName, int defaultValue)
 
 void options::set_int(LPCSTR optPath, LPCSTR lpValueName, int data)
 {
-	DWORD dwDisposition;
-
 	if (OptionsRegPath)
 	{
 		const CHAR* regPath = path(optPath);
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, (PHKEY)&optPath,
-		                     &dwDisposition))
+		HKEY hKey;
+		LSTATUS lResult = RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0,
+		                                  nullptr, 0, KEY_ALL_ACCESS, nullptr,
+										  &hKey, nullptr);
+		if (lResult == ERROR_SUCCESS)
 		{
-			RegSetValueExA((HKEY)optPath, lpValueName, 0, 4u, (const BYTE*)&data, 4u);
-			RegCloseKey((HKEY)optPath);
+			DWORD dwData = data;
+			RegSetValueExA(hKey, lpValueName, 0, REG_DWORD,
+			               reinterpret_cast<const BYTE*>(&dwData),
+						   sizeof(dwData));
+			RegCloseKey(hKey);
 		}
 		path_free();
 	}
