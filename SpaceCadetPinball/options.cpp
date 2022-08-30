@@ -187,20 +187,39 @@ void options::path_free()
 
 int options::get_int(LPCSTR optPath, LPCSTR lpValueName, int defaultValue)
 {
-	DWORD dwDisposition;	
-
-	HKEY result = (HKEY)defaultValue, Data = (HKEY)defaultValue;
-	if (!OptionsRegPath)
-		return defaultValue;
-	LPCSTR regPath = path(optPath);
-	if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, &result, &dwDisposition))
+	int result = defaultValue;
+	if (OptionsRegPath)
 	{
-		optPath = (LPCSTR)4;
-		RegQueryValueExA(result, lpValueName, nullptr, nullptr, (LPBYTE)&Data, (LPDWORD)&optPath);
-		RegCloseKey(result);
+		HKEY hKey;
+		LPCSTR regPath = path(optPath);
+		LSTATUS lStatus = RegCreateKeyExA(
+			HKEY_CURRENT_USER,
+			regPath,
+			0,
+			nullptr,
+			0,
+			KEY_ALL_ACCESS,
+			nullptr,
+			&hKey,
+			nullptr);
+		if (lStatus == ERROR_SUCCESS)
+		{
+			DWORD dwData = 0;
+			DWORD cbData = sizeof(dwData);
+			lStatus = RegQueryValueExA(
+				hKey,
+				lpValueName,
+				nullptr,
+				nullptr,
+				reinterpret_cast<LPBYTE>(&dwData),
+				&cbData);
+			if (lStatus == ERROR_SUCCESS)
+				result = dwData;
+			RegCloseKey(hKey);
+		}
+		path_free();
 	}
-	path_free();
-	return (int)Data;
+	return result;
 }
 
 void options::set_int(LPCSTR optPath, LPCSTR lpValueName, int data)
