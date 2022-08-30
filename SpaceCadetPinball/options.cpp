@@ -226,17 +226,20 @@ void options::set_int(LPCSTR optPath, LPCSTR lpValueName, int data)
 
 void options::get_string(LPCSTR optPath, LPCSTR lpValueName, LPSTR lpString1, LPCSTR lpString2, int iMaxLength)
 {
-	const CHAR* v5 = (const CHAR*)iMaxLength;
-	lstrcpynA(lpString1, lpString2, iMaxLength);
-	if (OptionsRegPath)
+	if (OptionsRegPath && iMaxLength > 0)
 	{
-		const CHAR* regPath = path(optPath);
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, (PHKEY)&iMaxLength,
-		                     (LPDWORD)&optPath))
+		lstrcpynA(lpString1, lpString2, iMaxLength);
+		LPCSTR regPath = path(optPath);
+		HKEY hKey;
+		LSTATUS lResult = RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0,
+										  nullptr, 0, KEY_READ, nullptr,
+										  &hKey, nullptr);
+		if (lResult == ERROR_SUCCESS)
 		{
-			lpString2 = v5;
-			RegQueryValueExA((HKEY)iMaxLength, lpValueName, nullptr, nullptr, (LPBYTE)lpString1, (LPDWORD)&lpString2);
-			RegCloseKey((HKEY)iMaxLength);
+			DWORD cbData = iMaxLength;
+			lResult = RegQueryValueExA(hKey, lpValueName, nullptr, nullptr,
+							 reinterpret_cast<LPBYTE>(lpString1), &cbData);
+			RegCloseKey(hKey);
 		}
 		path_free();
 	}
