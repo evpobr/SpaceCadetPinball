@@ -135,3 +135,4 @@ add_executable(pinball WIN32
 )
 target_link_libraries(pinball PRIVATE comctl32 winmm Htmlhelp)
 target_precompile_headers(pinball PRIVATE pch.h)
+target_compile_features(pinball PRIVATE cxx_std_17)
