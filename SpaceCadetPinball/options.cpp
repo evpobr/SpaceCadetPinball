@@ -244,17 +244,19 @@ void options::get_string(LPCSTR optPath, LPCSTR lpValueName, LPSTR lpString1, LP
 
 void options::set_string(LPCSTR optPath, LPCSTR lpValueName, LPCSTR value)
 {
-	DWORD dwDisposition;
-
 	if (OptionsRegPath)
 	{
-		const CHAR* regPath = path(optPath);
-		if (!RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0, nullptr, 0, 0xF003Fu, nullptr, (PHKEY)&optPath,
-		                     &dwDisposition))
+		LPCSTR regPath = path(optPath);
+		HKEY hKey;
+		LSTATUS lResult = RegCreateKeyExA(HKEY_CURRENT_USER, regPath, 0,
+										  nullptr, 0, KEY_ALL_ACCESS, nullptr,
+										  &hKey, nullptr);
+		if (lResult == ERROR_SUCCESS)
 		{
-			int v4 = lstrlenA(value);
-			RegSetValueExA((HKEY)optPath, lpValueName, 0, 1u, (const BYTE*)value, v4 + 1);
-			RegCloseKey((HKEY)optPath);
+			int value_size = lstrlenA(value) + 1;
+			RegSetValueExA(hKey, lpValueName, 0, 1u,
+						   reinterpret_cast<const BYTE*>(value), value_size);
+			RegCloseKey(hKey);
 		}
 		path_free();
 	}
