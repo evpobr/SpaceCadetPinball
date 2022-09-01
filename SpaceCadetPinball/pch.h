@@ -25,4 +25,6 @@
 /*Sound uses PlaySound*/
 #undef PlaySound
 
+#include <algorithm>
+
 #endif //PCH_H

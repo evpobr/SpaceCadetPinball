@@ -7,6 +7,10 @@
 #include "TDrain.h"
 #include "winmain.h"
 
+#include <algorithm>
+
+using namespace std;
+
 score_msg_font_type* score::msg_fontp;
 
 int score::init()
@@ -47,7 +51,7 @@ scoreStruct* score::dup(scoreStruct* score, int scoreIndex)
 {
 	auto result = reinterpret_cast<scoreStruct*>(memory::allocate(sizeof(scoreStruct)));
 	if (result)
-		memcpy(result, score, sizeof(scoreStruct));
+		*result = *score;
 	return result;
 }
 
@@ -70,7 +74,7 @@ void score::load_msg_font(LPCSTR lpName)
 		FreeResource(resGlobal);
 		return;
 	}
-	memset(fontp->Chars, 0, sizeof(fontp->Chars));
+	fill(begin(fontp->Chars), end(fontp->Chars), nullptr);
 
 	auto maxWidth = 0;
 	auto ptrToWidths = (char*)rcData + 6;
@@ -117,14 +121,14 @@ void score::load_msg_font(LPCSTR lpName)
 		}
 
 		auto sizeInBytes = height * width + 1;
-		memcpy(tmpCharBur + 3, ptrToData, sizeInBytes);
+		copy_n(ptrToData, sizeInBytes, tmpCharBur + 3);
 		ptrToData += sizeInBytes;
 
 		auto srcptr = tmpCharBur + 4;
 		auto dstPtr = &bmp->BmpBufPtr1[bmp->Stride * (bmp->Height - 1)];
 		for (auto y = 0; y < height; ++y)
 		{
-			memcpy(dstPtr, srcptr, width);
+			copy_n(srcptr, width, dstPtr);
 			srcptr += width;
 			dstPtr -= bmp->Stride;
 		}

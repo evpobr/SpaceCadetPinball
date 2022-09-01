@@ -4,6 +4,10 @@
 #include "pinball.h"
 #include "winmain.h"
 
+#include <algorithm>
+
+using namespace std;
+
 HPALETTE gdrv::palette_handle = nullptr;
 HINSTANCE gdrv::hinst;
 HWND gdrv::hwnd;
@@ -345,7 +349,7 @@ void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int y
 		do
 		{
 			if (width > 0)
-				memset(bmpPtr, fillChar, width);
+				fill_n(bmpPtr, width, fillChar);
 			bmpPtr += bmp->Stride;
 			--height;
 		}

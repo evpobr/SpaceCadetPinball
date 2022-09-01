@@ -3,6 +3,10 @@
 
 #include "pinball.h"
 
+#include <algorithm>
+
+using namespace std;
+
 int WaveMix::initialized_flag;
 char WaveMix::FileName[276];
 CHANNELNODE WaveMix::channel_nodes[MAXQUEUEDWAVES];
@@ -31,9 +35,8 @@ HANDLE WaveMix::Init()
 
 HANDLE WaveMix::ConfigureInit(MIXCONFIG* lpConfig)
 {
-	MIXCONFIG mixConfig{};
+	MIXCONFIG mixConfig{0};
 
-	memset(&mixConfig, 0, sizeof(MIXCONFIG));
 	unsigned int copySize = sizeof(MIXCONFIG);
 	mixConfig.RegistryKey = nullptr;
 	mixConfig.wSize = sizeof(MIXCONFIG);
@@ -41,7 +44,7 @@ HANDLE WaveMix::ConfigureInit(MIXCONFIG* lpConfig)
 	{
 		if (lpConfig->wSize < sizeof(MIXCONFIG))
 			copySize = lpConfig->wSize;
-		memcpy(&mixConfig, lpConfig, copySize);
+		mixConfig = *lpConfig;
 	}
 	if (initialized_flag || Startup(GetModuleHandleA(nullptr)) != 0)
 	{
@@ -75,7 +78,7 @@ HANDLE WaveMix::ConfigureInit(MIXCONFIG* lpConfig)
 		globals->DefaultVolume.L = 10;
 		globals->DefaultVolume.R = 10;
 		memset(globals->aChannel, 0xFFu, sizeof globals->aChannel);
-		memmove(&globals->PCM, &gpFormat, 0x10u);
+		globals->PCM = gpFormat;
 		if (!ReadConfigSettings(&mixConfig))
 		{
 			Globals->wMagic2 = 0;
@@ -97,7 +100,7 @@ int WaveMix::CloseSession(HANDLE hMixSession)
 
 	Activate(hMixSession, false);
 	CloseChannel(hMixSession, 0, 1);
-	memset(Globals, 0, sizeof(GLOBALS));
+	*Globals = {0};
 	Globals = nullptr;
 	if (!hMixSession || !LocalFree(hMixSession))
 		return 5;
@@ -290,7 +293,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 				break;
 			}
 
-			memset(&pmmioinfo, 0, sizeof(pmmioinfo));
+			pmmioinfo = {0};
 			pmmioinfo.pchBuffer = static_cast<HPSTR>(LockResource(hResData));
 			if (!pmmioinfo.pchBuffer)
 			{
@@ -426,7 +429,7 @@ MIXWAVE* WaveMix::OpenWave(HANDLE hMixSession, LPCSTR szWaveFilename, HINSTANCE 
 		mixWave->wh.dwLoops = 0;
 		mixWave->wh.dwUser = 0;
 		mixWave->wMagic = 21554;
-		memmove(mixWave, &Globals->PCM, 0x10u);
+		mixWave->pcm = Globals->PCM;
 
 		if (HIWORD(szWaveFilename))
 		{
@@ -667,7 +670,7 @@ int WaveMix::Play(MIXPLAYPARAMS* lpMixPlayParams)
 		if (!channel)
 			break;
 
-		memcpy(&channel->PlayParams, lpMixPlayParams, sizeof(channel->PlayParams));
+		channel->PlayParams = *lpMixPlayParams;
 		channel->lpMixWave = channel->PlayParams.lpMixWave;
 		channel->dwNumSamples = channel->PlayParams.lpMixWave->wh.dwBufferLength;
 		auto lpData = (unsigned __int8*)channel->PlayParams.lpMixWave->wh.lpData;
@@ -1216,7 +1219,7 @@ int WaveMix::Configure(GLOBALS* hMixSession, HWND hWndParent, MIXCONFIG* lpConfi
 			auto result = waveOutGetDevCapsA(mixConfig->wDeviceID, &pwoc, 0x34u);
 			if (result)
 				return result;
-			memcpy(&Globals->WaveoutCaps, &pwoc, sizeof Globals->WaveoutCaps);
+			Globals->WaveoutCaps = pwoc;
 			Globals->wDeviceID = mixConfig->wDeviceID;
 			if (Globals->WaveoutCaps.wChannels == 1 && Globals->PCM.wf.nChannels == 2)
 			{
@@ -1636,7 +1639,7 @@ int WaveMix::MixerPlay(XWAVEHDR* lpXWH, int fWriteBlocks)
 			auto length = waveBlockLen;
 			if (waveBlockLen + currentSample >= minStartPos)
 				length = minStartPos - currentSample;
-			memset(dataPtr, 0x80u, length);
+			fill_n(dataPtr, length, 0x80u);
 			dataPtr += length;
 			currentSample += length;
 			waveBlockLen -= length;

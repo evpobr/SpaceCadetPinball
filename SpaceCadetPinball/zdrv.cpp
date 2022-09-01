@@ -31,7 +31,7 @@ int zdrv::destroy_zmap(zmap_header_type* zmap)
 		return -1;
 	if (zmap->ZPtr1)
 		memory::free(zmap->ZPtr1);
-	memset(zmap, 0, sizeof(zmap_header_type));
+	*zmap = {0};
 	return 0;
 }
 
