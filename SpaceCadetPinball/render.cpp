@@ -18,9 +18,9 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 	zscaler = zScaler;
 	zmin = zMin;
 	zmax = 4294967300.0f / zScaler + zMin;
-	sprite_list = reinterpret_cast<render_sprite_type_struct**>(memory::allocate(1000 * sizeof(void*)));
-	dirty_list = reinterpret_cast<render_sprite_type_struct**>(memory::allocate(1000 * sizeof(void*)));
-	ball_list = reinterpret_cast<render_sprite_type_struct**>(memory::allocate(20 * sizeof(void*)));
+	sprite_list = new render_sprite_type_struct* [1000]{};
+	dirty_list = new render_sprite_type_struct* [1000]{};
+	ball_list = new render_sprite_type_struct* [20]{};
 	gdrv::create_bitmap(&vscreen, width, height);
 	zdrv::create_zmap(&zscreen, width, height);
 	zdrv::fill(&zscreen, zscreen.Width, zscreen.Height, 0, 0, 0xFFFF);
@@ -52,9 +52,9 @@ void render::uninit()
 		remove_sprite(sprite_list[i]);
 	for (int j = 0; j < many_balls; ++j)
 		remove_ball(ball_list[j]);
-	memory::free(ball_list);
-	memory::free(dirty_list);
-	memory::free(sprite_list);
+	delete [] ball_list;
+	delete [] dirty_list;
+	delete [] sprite_list;
 	many_sprites = 0;
 	many_dirty = 0;
 	many_balls = 0;
@@ -221,7 +221,7 @@ void render::sprite_modified(render_sprite_type_struct* sprite)
 render_sprite_type_struct* render::create_sprite(VisualType visualType, gdrv_bitmap8* bmp, zmap_header_type* zMap,
                                                  int xPosition, int yPosition, rectangle_type* rect)
 {
-	auto sprite = (render_sprite_type_struct*)memory::allocate(sizeof(render_sprite_type_struct));
+	auto sprite = new render_sprite_type_struct();
 	if (!sprite)
 		return nullptr;
 	sprite->BmpRect.YPosition = yPosition;
@@ -296,7 +296,7 @@ void render::remove_sprite(render_sprite_type_struct* sprite)
 		many_sprites = spriteCount - 1;
 		if (sprite->SpriteArray)
 			memory::free(sprite->SpriteArray);
-		memory::free(sprite);
+		delete sprite;
 	}
 }
 
