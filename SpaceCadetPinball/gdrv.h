@@ -36,6 +36,7 @@ struct LOGPALETTEx256
 class gdrv
 {
 public:
+	static RGBQUAD palette[256];
 	static HPALETTE palette_handle;
 	static LOGPALETTEx256 current_palette;
 	static int sequence_handle;

@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "gdrv.h"
 #include "memory.h"
+#include "partman.h"
 #include "pinball.h"
 #include "winmain.h"
 
+RGBQUAD gdrv::palette[256];
 HPALETTE gdrv::palette_handle = nullptr;
 HINSTANCE gdrv::hinst;
 HWND gdrv::hwnd;
@@ -20,6 +22,18 @@ int gdrv::init(HINSTANCE hInst, HWND hWnd)
 {
 	hinst = hInst;
 	hwnd = hWnd;
+	char dataFilePath[300];
+	pinball::make_path_name(dataFilePath, winmain::DatFileName, 300);
+	auto record_table = partman::load_records(dataFilePath);
+	auto plt = (PALETTEENTRY*)partman::field_labeled(record_table, "background", datFieldTypes::Palette);
+	for (size_t i = 0; i < 255; i++)
+	{
+		palette[i].rgbRed = plt[i].peBlue;
+		palette[i].rgbGreen = plt[i].peGreen;
+		palette[i].rgbBlue = plt[i].peRed;
+		palette[i].rgbReserved = plt[i].peFlags;
+	}
+	partman::unload_records(record_table);
 	if (!palette_handle)
 		palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
 	return 0;
