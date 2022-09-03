@@ -80,24 +80,9 @@ BITMAPINFO* gdrv::DibCreate(__int16 bpp, int width, int height)
 	}
 
 	int index = 0;
-	for (auto i = (int*)dib->bmiColors; index < static_cast<signed int>(dib->bmiHeader.biClrUsed) / 16; ++index)
+	for (size_t i = 0; i < 255; i++)
 	{
-		*i++ = 0;
-		*i++ = 0x800000;
-		*i++ = 0x8000;
-		*i++ = 8421376;
-		*i++ = 128;
-		*i++ = 8388736;
-		*i++ = 32896;
-		*i++ = 12632256;
-		*i++ = 8421504;
-		*i++ = 16711680;
-		*i++ = 65280;
-		*i++ = 16776960;
-		*i++ = 255;
-		*i++ = 16711935;
-		*i++ = 0xFFFF;
-		*i++ = 0xFFFFFF;
+		dib->bmiColors[i] = palette[i];
 	}
 	return dib;
 }

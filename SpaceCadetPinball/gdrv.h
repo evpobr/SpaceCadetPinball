@@ -19,6 +19,7 @@ struct gdrv_bitmap8
 	int Color6;
 	int XPosition;
 	int YPosition;
+	HBITMAP Handle;
 };
 
 struct LOGPALETTEx256
