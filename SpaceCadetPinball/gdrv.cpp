@@ -157,7 +157,6 @@ int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 	else
 		bmpBufPtr = (char*)&dib->bmiHeader.biSize + 4 * dib->bmiHeader.biClrUsed + dib->bmiHeader.biSize;
 	bmp->BmpBufPtr1 = bmpBufPtr;
-	bmp->BmpBufPtr2 = bmpBufPtr;
 	return 0;
 }
 
@@ -180,7 +179,6 @@ int gdrv::create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag)
 	bmp->BmpBufPtr1 = buf;
 	if (!buf)
 		return -1;
-	bmp->BmpBufPtr2 = buf;
 	return 0;
 }
 
