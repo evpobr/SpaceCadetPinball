@@ -39,6 +39,7 @@ public:
 	static float zscaler, zmin, zmax;
 	static rectangle_type vscreen_rect;
 	static gdrv_bitmap8 vscreen, *background_bitmap, ball_bitmap[20];
+	static HDC memory_dc;
 	static zmap_header_type zscreen;
 
 	static void init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height);

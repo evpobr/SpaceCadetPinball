@@ -304,7 +304,7 @@ void fullscrn::fillRect(int right, int bottom)
 	HGDIOBJ brush = CreateSolidBrush(0);
 	if (brush)
 	{
-		HDC dc = winmain::_GetDC(hWnd);
+		HDC dc = render::memory_dc;
 		HGDIOBJ brushHandle = SelectObject(dc, brush);
 		if (dc)
 		{
@@ -313,7 +313,6 @@ void fullscrn::fillRect(int right, int bottom)
 			rc.left = v2;
 			rc.top = v3;
 			FillRect(dc, &rc, static_cast<HBRUSH>(brush));
-			ReleaseDC(hWnd, dc);
 		}
 		SelectObject(dc, brushHandle);
 		DeleteObject(brush);

@@ -3,6 +3,7 @@
 #include "memory.h"
 #include "partman.h"
 #include "pinball.h"
+#include "render.h"
 #include "winmain.h"
 
 RGBQUAD gdrv::palette[256];
@@ -184,7 +185,7 @@ int gdrv::display_palette(PALETTEENTRY* plt)
 		DeleteObject(palette_handle);
 	palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
 	auto windowHandle = GetDesktopWindow();
-	auto dc = winmain::_GetDC(windowHandle);
+	auto dc = render::memory_dc;
 	SetSystemPaletteUse(dc, 2u);
 	SetSystemPaletteUse(dc, 1u);
 	auto pltHandle = SelectPalette(dc, palette_handle, 0);
@@ -220,8 +221,6 @@ int gdrv::display_palette(PALETTEENTRY* plt)
 
 	ResizePalette(palette_handle, 0x100u);
 	SetPaletteEntries(palette_handle, 0, 0x100u, current_palette.palPalEntry);
-	windowHandle = GetDesktopWindow();
-	ReleaseDC(windowHandle, dc);
 	return 0;
 }
 
@@ -246,7 +245,7 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 
 UINT gdrv::start_blit_sequence()
 {
-	HDC dc = winmain::_GetDC(hwnd);
+	HDC dc = render::memory_dc;
 	sequence_handle = 0;
 	sequence_hdc = dc;
 	SelectPalette(dc, palette_handle, 0);
@@ -275,12 +274,11 @@ void gdrv::blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, in
 
 void gdrv::end_blit_sequence()
 {
-	ReleaseDC(hwnd, sequence_hdc);
 }
 
 void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	HDC dc = winmain::_GetDC(hwnd);
+	HDC dc = render::memory_dc;
 	if (dc)
 	{
 		SelectPalette(dc, palette_handle, 0);
@@ -300,13 +298,12 @@ void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, 
 				bmp->Dib,
 				1u,
 				SRCCOPY);
-		ReleaseDC(hwnd, dc);
 	}
 }
 
 void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 {
-	HDC dc = winmain::_GetDC(hwnd);
+	HDC dc = render::memory_dc;
 	SelectPalette(dc, palette_handle, 0);
 	RealizePalette(dc);
 	if (!use_wing)
@@ -324,7 +321,7 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 			bmp->Dib,
 			1u,
 			SRCCOPY);
-	ReleaseDC(hwnd, dc);
+
 }
 
 void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar)
@@ -392,7 +389,7 @@ void gdrv::grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, 
 {
 	tagRECT rc{};
 
-	HDC dc = GetDC(hwnd);
+	HDC dc = render::memory_dc;
 	rc.left = xOff;
 	rc.right = width + xOff;
 	rc.top = yOff;
@@ -411,5 +408,4 @@ void gdrv::grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, 
 	DrawTextA(dc, text, lstrlenA(text), &rc, 0x810u);
 	SetBkMode(dc, prevMode);
 	SetTextColor(dc, color);
-	ReleaseDC(hwnd, dc);
 }
