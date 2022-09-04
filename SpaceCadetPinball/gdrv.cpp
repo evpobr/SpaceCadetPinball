@@ -9,8 +9,6 @@
 RGBQUAD gdrv::palette[256];
 HINSTANCE gdrv::hinst;
 HWND gdrv::hwnd;
-int gdrv::sequence_handle;
-HDC gdrv::sequence_hdc;
 int gdrv::use_wing = 0;
 int gdrv::grtext_blue = 0;
 int gdrv::grtext_green = 0;
@@ -134,40 +132,6 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 	}
 	memset(bmp, 0, sizeof(gdrv_bitmap8));
 	return 0;
-}
-
-UINT gdrv::start_blit_sequence()
-{
-	HDC dc = render::memory_dc;
-	sequence_handle = 0;
-	sequence_hdc = dc;
-	//SelectPalette(dc, palette_handle, 0);
-	//return RealizePalette(sequence_hdc);
-	return 0;
-}
-
-void gdrv::blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
-{
-	if (!use_wing)
-		StretchDIBits(
-			sequence_hdc,
-			xDest,
-			yDest,
-			DestWidth,
-			DestHeight,
-			xSrc,
-			bmp->Height - ySrcOff - DestHeight,
-			DestWidth,
-			DestHeight,
-			bmp->BmpBufPtr1,
-			bmp->Dib,
-			1u,
-			SRCCOPY);
-}
-
-
-void gdrv::end_blit_sequence()
-{
 }
 
 void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)

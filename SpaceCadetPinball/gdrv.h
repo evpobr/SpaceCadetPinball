@@ -37,8 +37,6 @@ class gdrv
 {
 public:
 	static RGBQUAD palette[256];
-	static int sequence_handle;
-	static HDC sequence_hdc;
 	static int use_wing;
 
 	static int init(HINSTANCE hInst, HWND hWnd);
@@ -49,10 +47,6 @@ public:
 	static int create_bitmap(gdrv_bitmap8* bmp, int width, int height);
 	static int create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag);
 	static int destroy_bitmap(gdrv_bitmap8* bmp);
-	static UINT start_blit_sequence();
-	static void blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth,
-	                          int DestHeight);
-	static void end_blit_sequence();
 	static void blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
 	static void blat(gdrv_bitmap8* bmp, int xDest, int yDest);
 	static void fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar);
