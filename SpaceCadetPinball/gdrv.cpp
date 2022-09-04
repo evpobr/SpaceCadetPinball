@@ -136,24 +136,33 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 
 void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	HDC dc = render::memory_dc;
-	if (dc)
+	if (render::memory_dc)
 	{
-		if (!use_wing)
-			StretchDIBits(
-				dc,
-				xDest,
-				yDest,
-				DestWidth,
-				DestHeight,
-				xSrc,
-				bmp->Height - ySrcOff - DestHeight,
-				DestWidth,
-				DestHeight,
-				bmp->BmpBufPtr1,
-				bmp->Dib,
-				1u,
-				SRCCOPY);
+		HDC dcBmp = CreateCompatibleDC(nullptr);
+		if (dcBmp)
+		{
+			HGDIOBJ hbmOld = SelectObject(dcBmp, bmp->Handle);
+			if (hbmOld)
+			{
+				DeleteObject(hbmOld);
+			}
+			if (!dcBmp)
+			{
+				StretchBlt(
+					render::memory_dc,
+					xDest,
+					yDest,
+					DestWidth,
+					DestHeight,
+					dcBmp,
+					xSrc,
+					bmp->Height - ySrcOff - DestHeight,
+					DestWidth,
+					DestHeight,
+					SRCCOPY);
+			}
+			DeleteDC(dcBmp);
+		}
 	}
 }
 
