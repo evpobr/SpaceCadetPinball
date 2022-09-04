@@ -217,6 +217,7 @@ void render::update()
 		}
 
 		gdrv::end_blit_sequence();
+		gdrv::blat(&vscreen, 0, 0);
 	}
 
 	many_dirty = 0;

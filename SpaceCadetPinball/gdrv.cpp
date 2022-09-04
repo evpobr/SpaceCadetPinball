@@ -248,8 +248,9 @@ UINT gdrv::start_blit_sequence()
 	HDC dc = render::memory_dc;
 	sequence_handle = 0;
 	sequence_hdc = dc;
-	SelectPalette(dc, palette_handle, 0);
-	return RealizePalette(sequence_hdc);
+	//SelectPalette(dc, palette_handle, 0);
+	//return RealizePalette(sequence_hdc);
+	return 0;
 }
 
 void gdrv::blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
@@ -303,25 +304,26 @@ void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, 
 
 void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 {
-	HDC dc = render::memory_dc;
-	SelectPalette(dc, palette_handle, 0);
-	RealizePalette(dc);
-	if (!use_wing)
-		StretchDIBits(
-			dc,
-			xDest,
-			yDest,
-			bmp->Width,
-			bmp->Height,
-			0,
-			0,
-			bmp->Width,
-			bmp->Height,
-			bmp->BmpBufPtr1,
-			bmp->Dib,
-			1u,
-			SRCCOPY);
-
+	HDC dc = winmain::_GetDC(winmain::hwnd_frame);
+	if (dc)
+	{
+		//SelectPalette(render::memory_dc, palette_handle, 0);
+		//RealizePalette(render::memory_dc);
+		if (!use_wing)
+			StretchBlt(
+				dc,
+				xDest,
+				yDest,
+				bmp->Width,
+				bmp->Height,
+				render::memory_dc,
+				0,
+				0,
+				bmp->Width,
+				bmp->Height,
+				SRCCOPY);
+		ReleaseDC(winmain::hwnd_frame, dc);
+	}
 }
 
 void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar)
