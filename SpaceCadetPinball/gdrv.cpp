@@ -106,18 +106,15 @@ int gdrv::create_bitmap(gdrv_bitmap8* bmp, int width, int height)
 
 int gdrv::create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag)
 {
-	bmp->Dib = nullptr;
+	bmp->Dib = DibCreate(8, width, height);
 	bmp->Width = width;
 	bmp->Stride = width;
 	if (flag && width % 4)
 		bmp->Stride = width - width % 4 + 4;
 	unsigned int sizeInBytes = height * bmp->Stride;
 	bmp->Height = height;
-	bmp->BitmapType = BitmapType::RawBitmap;
-	char* buf = memory::allocate(sizeInBytes);
-	bmp->BmpBufPtr1 = buf;
-	if (!buf)
-		return -1;
+	bmp->BitmapType = BitmapType::DibBitmap;
+	bmp->Handle = CreateDIBSection(GetDC(nullptr), bmp->Dib, DIB_RGB_COLORS, (void**)&bmp->BmpBufPtr1, nullptr, 0);
 	return 0;
 }
 
