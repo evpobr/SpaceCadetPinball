@@ -139,7 +139,6 @@ void gdrv::DibSetUsage(BITMAPINFO* dib, HPALETTE hpal, int someFlag)
 
 int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 {
-	char* bmpBufPtr;
 	auto dib = DibCreate(8, width, height);
 	DibSetUsage(dib, palette_handle, 1);
 
@@ -152,11 +151,7 @@ int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 	bmp->Height = height;
 	bmp->BitmapType = BitmapType::DibBitmap;
 
-	if (dib->bmiHeader.biCompression == 3)
-		bmpBufPtr = (char*)&dib->bmiHeader.biPlanes + dib->bmiHeader.biSize;
-	else
-		bmpBufPtr = (char*)&dib->bmiHeader.biSize + 4 * dib->bmiHeader.biClrUsed + dib->bmiHeader.biSize;
-	bmp->BmpBufPtr1 = bmpBufPtr;
+	bmp->Handle = CreateDIBSection(GetDC(nullptr), bmp->Dib, DIB_RGB_COLORS, (void**)&bmp->BmpBufPtr1, nullptr, 0);
 	return 0;
 }
 
@@ -243,6 +238,7 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 	{
 		GlobalUnlock(GlobalHandle(bmp->Dib));
 		GlobalFree(GlobalHandle(bmp->Dib));
+		DeleteObject(bmp->Handle);
 	}
 	memset(bmp, 0, sizeof(gdrv_bitmap8));
 	return 0;
