@@ -212,21 +212,6 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 					{
 						if (!gfr_display.BmpBufPtr1)
 						{
-							auto plt = static_cast<PALETTEENTRY*>(malloc(1024u));
-							auto pltPtr = &plt[10];
-							for (int i1 = 0, i2 = 0; i1 < 256 - 10; ++i1, i2 += 8)
-							{
-								unsigned char blue = i2, redGreen = i2;
-								if (i2 > 255)
-								{
-									blue = 255;
-									redGreen = i1;
-								}
-
-								*pltPtr++ = {redGreen, redGreen, blue};
-							}
-							gdrv::display_palette(plt);
-							free(plt);
 							gdrv::create_bitmap(&gfr_display, 400, 15);
 						}
 

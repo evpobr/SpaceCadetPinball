@@ -7,10 +7,8 @@
 #include "winmain.h"
 
 RGBQUAD gdrv::palette[256];
-HPALETTE gdrv::palette_handle = nullptr;
 HINSTANCE gdrv::hinst;
 HWND gdrv::hwnd;
-LOGPALETTEx256 gdrv::current_palette{};
 int gdrv::sequence_handle;
 HDC gdrv::sequence_hdc;
 int gdrv::use_wing = 0;
@@ -35,15 +33,11 @@ int gdrv::init(HINSTANCE hInst, HWND hWnd)
 		palette[i].rgbReserved = plt[i].peFlags;
 	}
 	partman::unload_records(record_table);
-	if (!palette_handle)
-		palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
 	return 0;
 }
 
 int gdrv::uninit()
 {
-	if (palette_handle)
-		DeleteObject(palette_handle);
 	return 0;
 }
 
@@ -89,60 +83,9 @@ BITMAPINFO* gdrv::DibCreate(__int16 bpp, int width, int height)
 }
 
 
-void gdrv::DibSetUsage(BITMAPINFO* dib, HPALETTE hpal, int someFlag)
-{
-	tagPALETTEENTRY pPalEntries[256];
-
-	if (!hpal)
-		hpal = static_cast<HPALETTE>(GetStockObject(DEFAULT_PALETTE));
-	if (!dib)
-		return;
-	int numOfColors = dib->bmiHeader.biClrUsed;
-	if (!numOfColors)
-	{
-		auto bpp = dib->bmiHeader.biBitCount;
-		if (bpp <= 8u)
-			numOfColors = 1 << bpp;
-	}
-	if (numOfColors > 0 && (dib->bmiHeader.biCompression != 3 || numOfColors == 3))
-	{
-		if (someFlag && someFlag <= 2)
-		{
-			auto pltPtr = (short*)((char*)dib + dib->bmiHeader.biSize);
-			for (int i = 0; i < numOfColors; ++i)
-			{
-				*pltPtr++ = i;
-			}
-		}
-		else
-		{
-			assertm(false, "Entered bad code");
-			char* dibPtr = (char*)dib + dib->bmiHeader.biSize;
-			if (numOfColors >= 256)
-				numOfColors = 256;
-			GetPaletteEntries(hpal, 0, numOfColors, pPalEntries);
-			int index = 0;
-			char* dibPtr2 = dibPtr + 1;
-			do
-			{
-				char v9 = pPalEntries[index++].peRed;
-				dibPtr2[1] = v9;
-				*dibPtr2 = dibPtr2[(char*)pPalEntries - dibPtr];
-				*(dibPtr2 - 1) = dibPtr2[&pPalEntries[0].peGreen - (unsigned char*)dibPtr];
-				dibPtr2[2] = 0;
-				dibPtr2 += 4;
-			}
-			while (index < numOfColors);
-		}
-	}
-}
-
-
 int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 {
 	auto dib = DibCreate(8, width, height);
-	DibSetUsage(dib, palette_handle, 1);
-
 	bmp->Dib = dib;
 	bmp->Width = width;
 	bmp->Stride = width;
@@ -177,53 +120,6 @@ int gdrv::create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag)
 		return -1;
 	return 0;
 }
-
-
-int gdrv::display_palette(PALETTEENTRY* plt)
-{
-	if (palette_handle)
-		DeleteObject(palette_handle);
-	palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
-	auto windowHandle = GetDesktopWindow();
-	auto dc = render::memory_dc;
-	SetSystemPaletteUse(dc, 2u);
-	SetSystemPaletteUse(dc, 1u);
-	auto pltHandle = SelectPalette(dc, palette_handle, 0);
-	RealizePalette(dc);
-	SelectPalette(dc, pltHandle, 0);
-	GetSystemPaletteEntries(dc, 0, 0x100u, current_palette.palPalEntry);
-	for (int i = 0; i < 256; i++)
-	{
-		current_palette.palPalEntry[i].peFlags = 0;
-	}
-
-	auto pltSrc = &plt[10];
-	auto pltDst = &current_palette.palPalEntry[10];
-	for (int index = 236; index > 0; --index)
-	{
-		if (plt)
-		{
-			pltDst->peRed = pltSrc->peBlue;
-			pltDst->peGreen = pltSrc->peGreen;
-			pltDst->peBlue = pltSrc->peRed;
-		}
-		pltDst->peFlags = 4;
-		pltSrc++;
-		pltDst++;
-	}
-
-	if (!(GetDeviceCaps(dc, 38) & 0x100))
-	{
-		current_palette.palPalEntry[255].peBlue = -1;
-		current_palette.palPalEntry[255].peGreen = -1;
-		current_palette.palPalEntry[255].peRed = -1;
-	}
-
-	ResizePalette(palette_handle, 0x100u);
-	SetPaletteEntries(palette_handle, 0, 0x100u, current_palette.palPalEntry);
-	return 0;
-}
-
 
 int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 {
@@ -282,8 +178,6 @@ void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, 
 	HDC dc = render::memory_dc;
 	if (dc)
 	{
-		SelectPalette(dc, palette_handle, 0);
-		RealizePalette(dc);
 		if (!use_wing)
 			StretchDIBits(
 				dc,
@@ -307,8 +201,6 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 	HDC dc = winmain::_GetDC(winmain::hwnd_frame);
 	if (dc)
 	{
-		//SelectPalette(render::memory_dc, palette_handle, 0);
-		//RealizePalette(render::memory_dc);
 		if (!use_wing)
 			StretchBlt(
 				dc,

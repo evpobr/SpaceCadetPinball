@@ -27,7 +27,6 @@ int main()
 	std::cout << "Hello World!\n";
 	gdrv::init(0, 0);
 	auto dib = gdrv::DibCreate(8, 1, 1);
-	gdrv::DibSetUsage(dib, 0, 1);
 
 	objlist_class d = objlist_class(2, 4);
 	for (int i = 0; i < 100; i++)
