@@ -1639,7 +1639,7 @@ int WaveMix::MixerPlay(XWAVEHDR* lpXWH, int fWriteBlocks)
 			auto length = waveBlockLen;
 			if (waveBlockLen + currentSample >= minStartPos)
 				length = minStartPos - currentSample;
-			fill_n(dataPtr, length, 0x80u);
+			fill_n(dataPtr, length, (unsigned char)128);
 			dataPtr += length;
 			currentSample += length;
 			waveBlockLen -= length;
