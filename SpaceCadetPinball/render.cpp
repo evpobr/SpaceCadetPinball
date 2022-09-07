@@ -462,7 +462,7 @@ void render::paint_balls()
 		{
 			int xPos = rect2->XPosition;
 			int yPos = rect2->YPosition;
-			gdrv::copy_bitmap(ballBmpPtr, rect2->Width, rect2->Height, 0, 0, &vscreen, xPos, yPos);
+			gdrv::copy_bitmap(ballBmpPtr, rect2->Width, rect2->Height, 0, 0, render::vscreen_dc, xPos, yPos);
 			zdrv::paint_flat(
 				rect2->Width,
 				rect2->Height,

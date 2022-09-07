@@ -266,21 +266,28 @@ void gdrv::copy_bitmap(HDC dstDC, int width, int height, int xOff, int yOff, gdr
 	}
 }
 
-void gdrv::copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff, gdrv_bitmap8* srcBmp,
+void gdrv::copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff, HDC srcDC,
                        int srcXOff, int srcYOff)
 {
-	int dstHeight = abs(dstBmp->Height);
-	int srcHeight = abs(srcBmp->Height);
-	char* srcPtr = &srcBmp->BmpBufPtr1[srcBmp->Stride * (srcHeight - height - srcYOff) + srcXOff];
-	char* dstPtr = &dstBmp->BmpBufPtr1[dstBmp->Stride * (dstHeight - height - yOff) + xOff];
-
-	for (int y = height; y > 0; --y)
+	HDC dstDC = CreateCompatibleDC(nullptr);
+	if (dstDC)
 	{
-		for (int x = width; x > 0; --x)
-			*dstPtr++ = *srcPtr++;
-
-		srcPtr += srcBmp->Stride - width;
-		dstPtr += dstBmp->Stride - width;
+		SelectObject(dstDC, dstBmp->Handle);
+		if (srcDC)
+		{
+			BOOL fRet = BitBlt(
+				dstDC,
+				xOff,
+				yOff,
+				width,
+				height,
+				srcDC,
+				srcXOff,
+				srcYOff,
+				SRCCOPY
+			);
+		}
+		DeleteDC(dstDC);
 	}
 }
 
