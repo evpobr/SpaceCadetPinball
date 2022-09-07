@@ -32,8 +32,6 @@ void memory::free(void* buf)
 	char firstChar = *(char*)bufStart;
 	if (firstChar == 90 || firstChar == -91)
 		std::free(bufStart);
-	else
-		assertm(false, "Unknown memory type");
 }
 
 char* memory::realloc(void* buf, unsigned int size)
