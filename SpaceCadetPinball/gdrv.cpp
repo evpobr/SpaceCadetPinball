@@ -173,20 +173,7 @@ int gdrv::create_bitmap(gdrv_bitmap8* bmp, int width, int height)
 
 int gdrv::create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag)
 {
-	bmp->Dib = nullptr;
-	bmp->Width = width;
-	bmp->Stride = width;
-	if (flag && width % 4)
-		bmp->Stride = width - width % 4 + 4;
-	unsigned int sizeInBytes = height * bmp->Stride;
-	bmp->Height = height;
-	bmp->BitmapType = BitmapType::RawBitmap;
-	char* buf = memory::allocate(sizeInBytes);
-	bmp->BmpBufPtr1 = buf;
-	if (!buf)
-		return -1;
-	bmp->BmpBufPtr2 = buf;
-	return 0;
+	return create_bitmap_dib(bmp, width, height);
 }
 
 
@@ -242,15 +229,13 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 {
 	if (!bmp)
 		return -1;
-	if (bmp->BitmapType == BitmapType::RawBitmap)
-	{
-		memory::free(bmp->BmpBufPtr1);
-	}
-	else if (bmp->BitmapType == BitmapType::DibBitmap)
+
+	if (bmp->Dib)
 	{
 		GlobalUnlock(GlobalHandle(bmp->Dib));
 		GlobalFree(GlobalHandle(bmp->Dib));
 	}
+
 	memset(bmp, 0, sizeof(gdrv_bitmap8));
 	return 0;
 }
