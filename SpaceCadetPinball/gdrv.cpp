@@ -157,12 +157,13 @@ int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 	bmp->Height = height;
 	bmp->BitmapType = BitmapType::DibBitmap;
 
-	if (dib->bmiHeader.biCompression == 3)
-		bmpBufPtr = (char*)&dib->bmiHeader.biPlanes + dib->bmiHeader.biSize;
-	else
-		bmpBufPtr = (char*)&dib->bmiHeader.biSize + 4 * dib->bmiHeader.biClrUsed + dib->bmiHeader.biSize;
-	bmp->BmpBufPtr1 = bmpBufPtr;
-	bmp->BmpBufPtr2 = bmpBufPtr;
+	bmp->Handle = CreateDIBSection(
+		winmain::_GetDC(winmain::hwnd_frame),
+		bmp->Dib,
+		DIB_RGB_COLORS,
+		(void **)&bmp->BmpBufPtr1,
+		nullptr,
+		0);
 	return 0;
 }
 
@@ -229,6 +230,11 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 {
 	if (!bmp)
 		return -1;
+
+	if (bmp->Handle)
+	{
+		DeleteObject(bmp->Handle);
+	}
 
 	if (bmp->Dib)
 	{
