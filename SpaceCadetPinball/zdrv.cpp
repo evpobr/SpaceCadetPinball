@@ -66,26 +66,51 @@ void zdrv::paint(int width, int height, gdrv_bitmap8* dstBmp, int dstBmpXOff, in
 	auto srcPtrZ = &srcZMap->ZPtr1[srcZMap->Stride * (srcZMap->Height - height - srcZMapYOff) + srcZMapXOff];
 	auto dstPtrZ = &dstZMap->ZPtr1[dstZMap->Stride * (dstZMap->Height - height - dstZMapYOff) + dstZMapXOff];
 
+	auto mask = new unsigned char[srcBmp->Stride * srcBmp->Height]{};
+	auto mskPtr = &mask[srcZMap->Stride * (srcZMap->Height - height - srcZMapYOff) + srcZMapXOff];
+
 	for (int y = height; y > 0; y--)
 	{
 		for (int x = width; x > 0; --x)
 		{
 			if (*dstPtrZ >= *srcPtrZ)
 			{
-				*dstPtr = *srcPtr;
 				*dstPtrZ = *srcPtrZ;
+				*mskPtr = 1;
+			}
+			++srcPtrZ;
+			++dstPtrZ;
+			++mskPtr;
+		}
+
+		srcPtrZ += srcZMap->Stride - width;
+		dstPtrZ += dstZMap->Stride - width;
+		mskPtr += srcBmp->Stride - width;
+	}
+
+	srcPtr = &srcBmp->BmpBufPtr1[srcBmp->Stride * (srcHeightAbs - height - srcBmpYOff) + srcBmpXOff];
+	dstPtr = &dstBmp->BmpBufPtr1[dstBmp->Stride * (dstHeightAbs - height - dstBmpYOff) + dstBmpXOff];
+	mskPtr = &mask[srcZMap->Stride * (srcZMap->Height - height - srcZMapYOff) + srcZMapXOff];
+
+	for (int y = height; y > 0; y--)
+	{
+		for (int x = width; x > 0; --x)
+		{
+			if (*mskPtr)
+			{
+				*dstPtr = *srcPtr;
 			}
 			++srcPtr;
 			++dstPtr;
-			++srcPtrZ;
-			++dstPtrZ;
+			++mskPtr;
 		}
 
 		srcPtr += srcBmp->Stride - width;
 		dstPtr += dstBmp->Stride - width;
-		srcPtrZ += srcZMap->Stride - width;
-		dstPtrZ += dstZMap->Stride - width;
+		mskPtr += srcBmp->Stride - width;
 	}
+
+	delete [] mask;
 }
 
 void zdrv::paint_flat(int width, int height, gdrv_bitmap8* dstBmp, int dstBmpXOff, int dstBmpYOff,
