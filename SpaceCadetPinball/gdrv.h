@@ -57,6 +57,8 @@ public:
 	static void blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
 	static void blat(gdrv_bitmap8* bmp, int xDest, int yDest);
 	static void fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar);
+	static void copy_bitmap(HDC dstDC, int width, int height, int xOff, int yOff, gdrv_bitmap8* srcBmp,
+	                        int srcXOff, int srcYOff);
 	static void copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff, gdrv_bitmap8* srcBmp,
 	                        int srcXOff, int srcYOff);
 	static void copy_bitmap_w_transparency(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff,

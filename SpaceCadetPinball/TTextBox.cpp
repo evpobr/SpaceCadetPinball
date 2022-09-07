@@ -73,7 +73,7 @@ void TTextBox::Clear()
 	gdrv_bitmap8* bmp = BgBmp;
 	if (bmp)
 		gdrv::copy_bitmap(
-			&render::vscreen,
+			render::vscreen_dc,
 			Width,
 			Height,
 			OffsetX,
@@ -157,7 +157,7 @@ void TTextBox::Draw()
 	auto bmp = BgBmp;
 	if (bmp)
 		gdrv::copy_bitmap(
-			&render::vscreen,
+			render::vscreen_dc,
 			Width,
 			Height,
 			OffsetX,
@@ -247,7 +247,7 @@ void TTextBox::Draw()
 								gdrv::copy_bitmap_w_transparency(&render::vscreen, width, height, offX, y, charBmp, 0,
 								                                 0);
 							else
-								gdrv::copy_bitmap(&render::vscreen, width, height, offX, y, charBmp, 0, 0);
+								gdrv::copy_bitmap(render::vscreen_dc, width, height, offX, y, charBmp, 0, 0);
 							font = Font;
 							offX += charBmp->Width + font->GapWidth;
 						}

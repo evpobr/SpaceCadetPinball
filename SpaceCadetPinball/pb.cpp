@@ -68,7 +68,7 @@ int pb::init()
 
 	render::init(nullptr, zMin, zScaler, tableSize[0], tableSize[1]);
 	gdrv::copy_bitmap(
-		&render::vscreen,
+		render::vscreen_dc,
 		backgroundBmp->Width,
 		backgroundBmp->Height,
 		backgroundBmp->XPosition,

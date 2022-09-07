@@ -244,6 +244,28 @@ void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int y
 	}
 }
 
+void gdrv::copy_bitmap(HDC dstDC, int width, int height, int xOff, int yOff, gdrv_bitmap8* srcBmp,
+                       int srcXOff, int srcYOff)
+{
+	if (dstDC)
+	{
+		HDC srcDC = CreateCompatibleDC(dstDC);
+		SelectObject(srcDC, srcBmp->Handle);
+		BOOL fRet = BitBlt(
+			dstDC,
+			xOff,
+			yOff,
+			width,
+			height,
+			srcDC,
+			srcXOff,
+			srcYOff,
+			SRCCOPY
+		);
+		DeleteDC(srcDC);
+	}
+}
+
 void gdrv::copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff, gdrv_bitmap8* srcBmp,
                        int srcXOff, int srcYOff)
 {

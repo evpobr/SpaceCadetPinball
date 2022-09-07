@@ -45,7 +45,7 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 	}
 	background_bitmap = bmp;
 	if (bmp)
-		gdrv::copy_bitmap(&vscreen, width, height, 0, 0, bmp, 0, 0);
+		gdrv::copy_bitmap(render::vscreen_dc, width, height, 0, 0, bmp, 0, 0);
 	else
 		gdrv::fill_bitmap(&vscreen, vscreen.Width, vscreen.Height, 0, 0, 0);
 	--memory::critical_allocation;
@@ -98,7 +98,7 @@ void render::update()
 				auto height = curSprite->DirtyRect.Height;
 				zdrv::fill(&zscreen, width, height, xPos, yPos, 0xFFFF);
 				if (background_bitmap)
-					gdrv::copy_bitmap(&vscreen, width, height, xPos, yPos, background_bitmap, xPos, yPos);
+					gdrv::copy_bitmap(render::vscreen_dc, width, height, xPos, yPos, background_bitmap, xPos, yPos);
 				else
 					gdrv::fill_bitmap(&vscreen, width, height, xPos, yPos, 0);
 			}
@@ -118,7 +118,7 @@ void render::update()
 				auto height = curSprite->DirtyRect.Height;
 				zdrv::fill(&zscreen, width, height, xPos, yPos, 0xFFFF);
 				if (background_bitmap)
-					gdrv::copy_bitmap(&vscreen, width, height, xPos, yPos, background_bitmap, xPos, yPos);
+					gdrv::copy_bitmap(render::vscreen_dc, width, height, xPos, yPos, background_bitmap, xPos, yPos);
 				else
 					gdrv::fill_bitmap(&vscreen, width, height, xPos, yPos, 0);
 			}
@@ -500,7 +500,7 @@ void render::unpaint_balls()
 			int width = (*ballPtr)->DirtyRect.Width;
 			if (width > 0)
 				gdrv::copy_bitmap(
-					&vscreen,
+					render::vscreen_dc,
 					width,
 					(*ballPtr)->DirtyRect.Height,
 					(*ballPtr)->DirtyRect.XPosition,

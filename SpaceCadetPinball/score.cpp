@@ -161,7 +161,7 @@ void score::erase(scoreStruct* score, int blitFlag)
 	{
 		if (score->BackgroundBmp)
 			gdrv::copy_bitmap(
-				&render::vscreen,
+				render::vscreen_dc,
 				score->Width,
 				score->Height,
 				score->OffsetX,
@@ -217,7 +217,7 @@ void score::update(scoreStruct* score)
 				if (render::background_bitmap)
 					gdrv::copy_bitmap_w_transparency(&render::vscreen, width, height, x, y, bmp, 0, 0);
 				else
-					gdrv::copy_bitmap(&render::vscreen, width, height, x, y, bmp, 0, 0);
+					gdrv::copy_bitmap(render::vscreen_dc, width, height, x, y, bmp, 0, 0);
 			}
 		}
 		gdrv::blit(
