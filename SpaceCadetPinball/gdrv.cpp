@@ -1,38 +1,49 @@
 #include "pch.h"
 #include "gdrv.h"
 #include "memory.h"
+#include "partman.h"
 #include "pinball.h"
+#include "render.h"
 #include "winmain.h"
 
 #include <algorithm>
 
 using namespace std;
 
-HPALETTE gdrv::palette_handle = nullptr;
 HINSTANCE gdrv::hinst;
 HWND gdrv::hwnd;
-LOGPALETTEx256 gdrv::current_palette{};
 int gdrv::sequence_handle;
 HDC gdrv::sequence_hdc;
 int gdrv::use_wing = 0;
 int gdrv::grtext_blue = 0;
 int gdrv::grtext_green = 0;
 int gdrv::grtext_red = -1;
+RGBQUAD gdrv::palette[256];
 
 
 int gdrv::init(HINSTANCE hInst, HWND hWnd)
 {
 	hinst = hInst;
 	hwnd = hWnd;
-	if (!palette_handle)
-		palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
+	char datFilePath[300];
+	pinball::make_path_name(datFilePath, winmain::DatFileName, 300);
+	auto record_table = partman::load_records(datFilePath);
+	auto plt = (PALETTEENTRY*)partman::field_labeled(record_table, "background", datFieldTypes::Palette);
+	for (size_t i = 0; i < 256; i++)
+	{
+		palette[i].rgbBlue = plt[i].peRed;
+		palette[i].rgbGreen = plt[i].peGreen;
+		palette[i].rgbRed = plt[i].peBlue;
+		palette[i].rgbReserved = plt[i].peFlags;
+	}
+	
+	partman::unload_records(record_table);
+
 	return 0;
 }
 
 int gdrv::uninit()
 {
-	if (palette_handle)
-		DeleteObject(palette_handle);
 	return 0;
 }
 
@@ -69,76 +80,9 @@ BITMAPINFO* gdrv::DibCreate(__int16 bpp, int width, int height)
 		dib->bmiHeader.biClrUsed = 256;
 	}
 
-	int index = 0;
-	for (auto i = (int*)dib->bmiColors; index < static_cast<signed int>(dib->bmiHeader.biClrUsed) / 16; ++index)
-	{
-		*i++ = 0;
-		*i++ = 0x800000;
-		*i++ = 0x8000;
-		*i++ = 8421376;
-		*i++ = 128;
-		*i++ = 8388736;
-		*i++ = 32896;
-		*i++ = 12632256;
-		*i++ = 8421504;
-		*i++ = 16711680;
-		*i++ = 65280;
-		*i++ = 16776960;
-		*i++ = 255;
-		*i++ = 16711935;
-		*i++ = 0xFFFF;
-		*i++ = 0xFFFFFF;
-	}
+	memcpy(dib->bmiColors, palette, sizeof(RGBQUAD) * 256);
+	
 	return dib;
-}
-
-
-void gdrv::DibSetUsage(BITMAPINFO* dib, HPALETTE hpal, int someFlag)
-{
-	tagPALETTEENTRY pPalEntries[256];
-
-	if (!hpal)
-		hpal = static_cast<HPALETTE>(GetStockObject(DEFAULT_PALETTE));
-	if (!dib)
-		return;
-	int numOfColors = dib->bmiHeader.biClrUsed;
-	if (!numOfColors)
-	{
-		auto bpp = dib->bmiHeader.biBitCount;
-		if (bpp <= 8u)
-			numOfColors = 1 << bpp;
-	}
-	if (numOfColors > 0 && (dib->bmiHeader.biCompression != 3 || numOfColors == 3))
-	{
-		if (someFlag && someFlag <= 2)
-		{
-			auto pltPtr = (short*)((char*)dib + dib->bmiHeader.biSize);
-			for (int i = 0; i < numOfColors; ++i)
-			{
-				*pltPtr++ = i;
-			}
-		}
-		else
-		{
-			assertm(false, "Entered bad code");
-			char* dibPtr = (char*)dib + dib->bmiHeader.biSize;
-			if (numOfColors >= 256)
-				numOfColors = 256;
-			GetPaletteEntries(hpal, 0, numOfColors, pPalEntries);
-			int index = 0;
-			char* dibPtr2 = dibPtr + 1;
-			do
-			{
-				char v9 = pPalEntries[index++].peRed;
-				dibPtr2[1] = v9;
-				*dibPtr2 = dibPtr2[(char*)pPalEntries - dibPtr];
-				*(dibPtr2 - 1) = dibPtr2[&pPalEntries[0].peGreen - (unsigned char*)dibPtr];
-				dibPtr2[2] = 0;
-				dibPtr2 += 4;
-			}
-			while (index < numOfColors);
-		}
-	}
 }
 
 
@@ -146,7 +90,6 @@ int gdrv::create_bitmap_dib(gdrv_bitmap8* bmp, int width, int height)
 {
 	char* bmpBufPtr;
 	auto dib = DibCreate(8, width, height);
-	DibSetUsage(dib, palette_handle, 1);
 
 	bmp->Dib = dib;
 	bmp->Width = width;
@@ -178,54 +121,6 @@ int gdrv::create_raw_bitmap(gdrv_bitmap8* bmp, int width, int height, int flag)
 }
 
 
-int gdrv::display_palette(PALETTEENTRY* plt)
-{
-	if (palette_handle)
-		DeleteObject(palette_handle);
-	palette_handle = CreatePalette((LOGPALETTE*)&current_palette);
-	auto windowHandle = GetDesktopWindow();
-	auto dc = winmain::_GetDC(windowHandle);
-	SetSystemPaletteUse(dc, 2u);
-	SetSystemPaletteUse(dc, 1u);
-	auto pltHandle = SelectPalette(dc, palette_handle, 0);
-	RealizePalette(dc);
-	SelectPalette(dc, pltHandle, 0);
-	GetSystemPaletteEntries(dc, 0, 0x100u, current_palette.palPalEntry);
-	for (int i = 0; i < 256; i++)
-	{
-		current_palette.palPalEntry[i].peFlags = 0;
-	}
-
-	auto pltSrc = &plt[10];
-	auto pltDst = &current_palette.palPalEntry[10];
-	for (int index = 236; index > 0; --index)
-	{
-		if (plt)
-		{
-			pltDst->peRed = pltSrc->peBlue;
-			pltDst->peGreen = pltSrc->peGreen;
-			pltDst->peBlue = pltSrc->peRed;
-		}
-		pltDst->peFlags = 4;
-		pltSrc++;
-		pltDst++;
-	}
-
-	if (!(GetDeviceCaps(dc, 38) & 0x100))
-	{
-		current_palette.palPalEntry[255].peBlue = -1;
-		current_palette.palPalEntry[255].peGreen = -1;
-		current_palette.palPalEntry[255].peRed = -1;
-	}
-
-	ResizePalette(palette_handle, 0x100u);
-	SetPaletteEntries(palette_handle, 0, 0x100u, current_palette.palPalEntry);
-	windowHandle = GetDesktopWindow();
-	ReleaseDC(windowHandle, dc);
-	return 0;
-}
-
-
 int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 {
 	if (!bmp)
@@ -248,30 +143,31 @@ int gdrv::destroy_bitmap(gdrv_bitmap8* bmp)
 
 UINT gdrv::start_blit_sequence()
 {
-	HDC dc = winmain::_GetDC(hwnd);
 	sequence_handle = 0;
-	sequence_hdc = dc;
-	SelectPalette(dc, palette_handle, 0);
-	return RealizePalette(sequence_hdc);
+	sequence_hdc = render::vscreen_dc;
+	return 0;
 }
 
 void gdrv::blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	if (!use_wing)
-		StretchDIBits(
+	HDC dcSrc = CreateCompatibleDC(sequence_hdc);
+	if (dcSrc)
+	{
+		SelectObject(dcSrc, bmp->Handle);
+		StretchBlt(
 			sequence_hdc,
 			xDest,
 			yDest,
 			DestWidth,
 			DestHeight,
+			dcSrc,
 			xSrc,
 			bmp->Height - ySrcOff - DestHeight,
 			DestWidth,
 			DestHeight,
-			bmp->BmpBufPtr1,
-			bmp->Dib,
-			1u,
 			SRCCOPY);
+			DeleteDC(dcSrc);
+	}
 }
 
 
@@ -282,51 +178,51 @@ void gdrv::end_blit_sequence()
 
 void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	HDC dc = winmain::_GetDC(hwnd);
-	if (dc)
+	if (render::vscreen_dc)
 	{
-		SelectPalette(dc, palette_handle, 0);
-		RealizePalette(dc);
-		if (!use_wing)
-			StretchDIBits(
-				dc,
+		HDC dcSrc = CreateCompatibleDC(render::vscreen_dc);
+		if (dcSrc)
+		{
+			SelectObject(dcSrc, bmp->Handle);
+			StretchBlt(
+				render::vscreen_dc,
 				xDest,
 				yDest,
 				DestWidth,
 				DestHeight,
+				dcSrc,
 				xSrc,
 				bmp->Height - ySrcOff - DestHeight,
 				DestWidth,
 				DestHeight,
-				bmp->BmpBufPtr1,
-				bmp->Dib,
-				1u,
 				SRCCOPY);
-		ReleaseDC(hwnd, dc);
+			DeleteDC(dcSrc);
+		}
 	}
 }
 
 void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 {
 	HDC dc = winmain::_GetDC(hwnd);
-	SelectPalette(dc, palette_handle, 0);
-	RealizePalette(dc);
-	if (!use_wing)
-		StretchDIBits(
-			dc,
-			xDest,
-			yDest,
-			bmp->Width,
-			bmp->Height,
-			0,
-			0,
-			bmp->Width,
-			bmp->Height,
-			bmp->BmpBufPtr1,
-			bmp->Dib,
-			1u,
-			SRCCOPY);
-	ReleaseDC(hwnd, dc);
+	if (dc)
+	{
+		if (dc)
+		{
+			StretchBlt(
+				dc,
+				xDest,
+				yDest,
+				bmp->Width,
+				bmp->Height,
+				render::vscreen_dc,
+				0,
+				0,
+				bmp->Width,
+				bmp->Height,
+				SRCCOPY);
+		}
+		ReleaseDC(hwnd, dc);
+	}
 }
 
 void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar)
@@ -394,7 +290,7 @@ void gdrv::grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, 
 {
 	tagRECT rc{};
 
-	HDC dc = GetDC(hwnd);
+	HDC dc = render::vscreen_dc;
 	rc.left = xOff;
 	rc.right = width + xOff;
 	rc.top = yOff;
@@ -413,5 +309,4 @@ void gdrv::grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, 
 	DrawTextA(dc, text, lstrlenA(text), &rc, 0x810u);
 	SetBkMode(dc, prevMode);
 	SetTextColor(dc, color);
-	ReleaseDC(hwnd, dc);
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "render.h"
 #include "memory.h"
+#include "winmain.h"
 
 int render::blit = 0;
 int render::many_dirty, render::many_sprites, render::many_balls;
@@ -11,6 +12,7 @@ float render::zscaler, render::zmin, render::zmax;
 rectangle_type render::vscreen_rect;
 gdrv_bitmap8 render::vscreen, *render::background_bitmap, render::ball_bitmap[20];
 zmap_header_type render::zscreen;
+HDC render::vscreen_dc;
 
 void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height)
 {
@@ -22,6 +24,11 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 	dirty_list = new render_sprite_type_struct* [1000]{};
 	ball_list = new render_sprite_type_struct* [20]{};
 	gdrv::create_bitmap(&vscreen, width, height);
+	vscreen_dc = CreateCompatibleDC(winmain::_GetDC(winmain::hwnd_frame));
+	if (vscreen_dc)
+	{
+		SelectObject(vscreen_dc, vscreen.Handle);
+	}
 	zdrv::create_zmap(&zscreen, width, height);
 	zdrv::fill(&zscreen, zscreen.Width, zscreen.Height, 0, 0, 0xFFFF);
 	vscreen_rect.YPosition = 0;
@@ -46,6 +53,10 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 
 void render::uninit()
 {
+	if (vscreen_dc)
+	{
+		DeleteDC(vscreen_dc);
+	}
 	gdrv::destroy_bitmap(&vscreen);
 	zdrv::destroy_zmap(&zscreen);
 	for (int i = 0; i < many_sprites; ++i)
@@ -201,6 +212,7 @@ void render::update()
 	}
 
 	many_dirty = 0;
+	gdrv::blat(&vscreen, vscreen.XPosition, vscreen.YPosition);
 	unpaint_balls();
 }
 

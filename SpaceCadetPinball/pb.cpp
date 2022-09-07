@@ -49,8 +49,6 @@ int pb::init()
 		return (int)&record_table->NumberOfGroups + 1;
 
 	auto plt = (PALETTEENTRY*)partman::field_labeled(record_table, "background", datFieldTypes::Palette);
-	gdrv::display_palette(plt);
-
 	auto tableSize = (__int16*)partman::field_labeled(record_table, "table_size", datFieldTypes::ShortArray);
 	auto backgroundBmp = (gdrv_bitmap8*)partman::field_labeled(record_table, "background", datFieldTypes::Bitmap8bit);
 	auto cameraInfo = (float*)partman::field_labeled(record_table, "camera_info", datFieldTypes::FloatArray);

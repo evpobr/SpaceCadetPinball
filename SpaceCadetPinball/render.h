@@ -38,6 +38,7 @@ public:
 	static int zmap_offset, zmap_offsetY, offset_x, offset_y;
 	static float zscaler, zmin, zmax;
 	static rectangle_type vscreen_rect;
+	static HDC vscreen_dc;
 	static gdrv_bitmap8 vscreen, *background_bitmap, ball_bitmap[20];
 	static zmap_header_type zscreen;
 
