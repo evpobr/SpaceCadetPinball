@@ -225,6 +225,22 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 	}
 }
 
+void gdrv::fill_bitmap(HDC dc, int width, int height, int xOff, int yOff, char fillChar)
+{
+	HBRUSH brush = CreateSolidBrush(RGB(palette[fillChar].rgbRed, palette[fillChar].rgbGreen, palette[fillChar].rgbBlue));
+	if (brush)
+	{
+		HGDIOBJ brushHandle = SelectObject(dc, brush);
+		if (dc)
+		{
+			const RECT rc{xOff , yOff, width + 1, height + 1};
+			FillRect(dc, &rc, brush);
+		}
+		SelectObject(dc, brushHandle);
+		DeleteObject(brush);
+	}
+}
+
 void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar)
 {
 	int bmpHeight = bmp->Height;
