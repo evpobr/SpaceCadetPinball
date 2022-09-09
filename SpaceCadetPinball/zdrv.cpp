@@ -126,9 +126,9 @@ void zdrv::paint_flat(int width, int height, gdrv_bitmap8* dstBmp, int dstBmpXOf
 	auto mask = new unsigned char[srcBmp->Stride * srcBmp->Height]{};
 	auto mskPtr = &mask[srcBmp->Stride * (srcHeightAbs - height - srcBmpYOff) + srcBmpXOff];
 
-	for (int y = height; y > 0; y--)
+	for (int y = 0; y < height; y++)
 	{
-		for (int x = width; x > 0; --x)
+		for (int x = 0; x < width; x++)
 		{
 			if (*srcPtr && *zPtr > depth)
 			{
@@ -150,9 +150,9 @@ void zdrv::paint_flat(int width, int height, gdrv_bitmap8* dstBmp, int dstBmpXOf
 	zPtr = &zMap->ZPtr1[zMap->Stride * (zMap->Height - height - dstZMapYOff) + dstZMapXOff];
 	mskPtr = &mask[srcBmp->Stride * (srcHeightAbs - height - srcBmpYOff) + srcBmpXOff];
 
-	for (int y = height; y > 0; y--)
+	for (int y = 0; y < height; y++)
 	{
-		for (int x = width; x > 0; --x)
+		for (int x = 0; x < width; x++)
 		{
 			if (*mskPtr)
 			{
