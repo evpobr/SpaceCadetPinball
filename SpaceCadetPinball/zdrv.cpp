@@ -167,4 +167,6 @@ void zdrv::paint_flat(int width, int height, gdrv_bitmap8* dstBmp, int dstBmpXOf
 		dstPtr += dstBmp->Stride - width;
 		mskPtr += srcBmp->Stride - width;
 	}
+
+	delete [] mask;
 }
