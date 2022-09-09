@@ -62,7 +62,7 @@ BITMAPINFO* gdrv::DibCreate(__int16 bpp, int width, int height)
 		return nullptr;
 	dib->bmiHeader.biSizeImage = sizeBytes;
 	dib->bmiHeader.biWidth = width;
-	dib->bmiHeader.biSize = 40;
+	dib->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 	dib->bmiHeader.biHeight = height;
 	dib->bmiHeader.biPlanes = 1;
 	dib->bmiHeader.biBitCount = bpp;
