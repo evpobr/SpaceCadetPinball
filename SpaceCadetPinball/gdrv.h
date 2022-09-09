@@ -10,7 +10,6 @@ enum class BitmapType : char
 struct gdrv_bitmap8
 {
 	BITMAPINFO* Dib;
-	char* BmpBufPtr2;
 	char* BmpBufPtr1;
 	int Width;
 	int Height;
