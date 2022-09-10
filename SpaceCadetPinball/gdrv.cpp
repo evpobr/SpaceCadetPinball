@@ -307,27 +307,10 @@ void gdrv::copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, in
 	}
 }
 
-void gdrv::copy_bitmap_w_transparency(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff,
+void gdrv::copy_bitmap_w_transparency(HDC dstDC, int width, int height, int xOff, int yOff,
                                       gdrv_bitmap8* srcBmp, int srcXOff, int srcYOff)
 {
-	int dstHeight = abs(dstBmp->Height);
-	int srcHeight = abs(srcBmp->Height);
-	char* srcPtr = &srcBmp->BmpBufPtr1[srcBmp->Stride * (srcHeight - height - srcYOff) + srcXOff];
-	char* dstPtr = &dstBmp->BmpBufPtr1[dstBmp->Stride * (dstHeight - height - yOff) + xOff];
-
-	for (int y = height; y > 0; --y)
-	{
-		for (int x = width; x > 0; --x)
-		{
-			if (*srcPtr)
-				*dstPtr = *srcPtr;
-			++srcPtr;
-			++dstPtr;
-		}
-
-		srcPtr += srcBmp->Stride - width;
-		dstPtr += dstBmp->Stride - width;
-	}
+	copy_bitmap(dstDC, width, height, xOff, yOff, srcBmp, srcXOff, srcYOff);
 }
 
 

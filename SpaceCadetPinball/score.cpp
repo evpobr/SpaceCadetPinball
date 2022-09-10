@@ -215,7 +215,7 @@ void score::update(scoreStruct* score)
 				int height = bmp->Height;
 				int width = bmp->Width;
 				if (render::background_bitmap)
-					gdrv::copy_bitmap_w_transparency(&render::vscreen, width, height, x, y, bmp, 0, 0);
+					gdrv::copy_bitmap_w_transparency(render::vscreen_dc, width, height, x, y, bmp, 0, 0);
 				else
 					gdrv::copy_bitmap(render::vscreen_dc, width, height, x, y, bmp, 0, 0);
 			}

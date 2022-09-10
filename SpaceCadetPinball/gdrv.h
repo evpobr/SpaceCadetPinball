@@ -61,7 +61,7 @@ public:
 	                        int srcXOff, int srcYOff);
 	static void copy_bitmap(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff, HDC srcDC,
 	                        int srcXOff, int srcYOff);
-	static void copy_bitmap_w_transparency(gdrv_bitmap8* dstBmp, int width, int height, int xOff, int yOff,
+	static void copy_bitmap_w_transparency(HDC dstDC, int width, int height, int xOff, int yOff,
 	                                       gdrv_bitmap8* srcBmp, int srcXOff, int srcYOff);
 	static void grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, int height, int a6);
 private:

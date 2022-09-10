@@ -244,7 +244,7 @@ void TTextBox::Draw()
 							auto height = charBmp->Height;
 							auto width = charBmp->Width;
 							if (render::background_bitmap)
-								gdrv::copy_bitmap_w_transparency(&render::vscreen, width, height, offX, y, charBmp, 0,
+								gdrv::copy_bitmap_w_transparency(render::vscreen_dc, width, height, offX, y, charBmp, 0,
 								                                 0);
 							else
 								gdrv::copy_bitmap(render::vscreen_dc, width, height, offX, y, charBmp, 0, 0);
