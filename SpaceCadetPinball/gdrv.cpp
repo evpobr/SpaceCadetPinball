@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#include <windowsx.h>
+
 #include "gdrv.h"
 #include "memory.h"
 #include "partman.h"
@@ -243,20 +246,20 @@ void gdrv::fill_bitmap(HDC dc, int width, int height, int xOff, int yOff, char f
 
 void gdrv::fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar)
 {
-	int bmpHeight = bmp->Height;
-	if (bmpHeight < 0)
-		bmpHeight = -bmpHeight;
-	char* bmpPtr = &bmp->BmpBufPtr1[bmp->Width * (bmpHeight - height - yOff) + xOff];
-	if (height > 0)
+	HDC bmpDC = CreateCompatibleDC(render::vscreen_dc);
+	if (bmpDC)
 	{
-		do
+		HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
+		if (brush)
 		{
-			if (width > 0)
-				fill_n(bmpPtr, width, fillChar);
-			bmpPtr += bmp->Stride;
-			--height;
+			HBRUSH old_brush = SelectBrush(bmpDC, brush);
+
+			const RECT bmp_rect{ xOff, yOff, width, height };
+			FillRect(bmpDC, &bmp_rect, brush);
+			SelectBrush(bmpDC, old_brush);
+			DeleteBrush(brush);
 		}
-		while (height);
+		DeleteDC(bmpDC);
 	}
 }
 
