@@ -227,17 +227,17 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 
 void gdrv::fill_bitmap(HDC dc, int width, int height, int xOff, int yOff, char fillChar)
 {
-	HBRUSH brush = CreateSolidBrush(RGB(palette[fillChar].rgbRed, palette[fillChar].rgbGreen, palette[fillChar].rgbBlue));
-	if (brush)
+	if (dc)
 	{
-		HGDIOBJ brushHandle = SelectObject(dc, brush);
-		if (dc)
+		HBRUSH brush = CreateSolidBrush(RGB(palette[fillChar].rgbRed, palette[fillChar].rgbGreen, palette[fillChar].rgbBlue));
+		if (brush)
 		{
-			const RECT rc{xOff , yOff, width + 1, height + 1};
+			HGDIOBJ old_brush = SelectObject(dc, brush);
+			const RECT rc{ xOff , yOff, width + 1, height + 1 };
 			FillRect(dc, &rc, brush);
+			SelectObject(dc, old_brush);
+			DeleteObject(brush);
 		}
-		SelectObject(dc, brushHandle);
-		DeleteObject(brush);
 	}
 }
 
