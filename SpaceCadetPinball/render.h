@@ -41,6 +41,7 @@ public:
 	static HDC vscreen_dc;
 	static gdrv_bitmap8 vscreen, *background_bitmap, ball_bitmap[20];
 	static zmap_header_type zscreen;
+	static HBITMAP vscreen32_bmp;
 
 	static void init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height);
 	static void uninit();

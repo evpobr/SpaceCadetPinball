@@ -209,18 +209,34 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 	HDC dc = winmain::_GetDC(hwnd);
 	if (dc)
 	{
-		StretchBlt(
-			dc,
-			xDest,
-			yDest,
-			bmp->Width,
-			bmp->Height,
-			render::vscreen_dc,
-			0,
-			0,
-			bmp->Width,
-			bmp->Height,
-			SRCCOPY);
+		HDC vscreen32_dc = CreateCompatibleDC(winmain::_GetDC(hwnd));
+		HBITMAP vscreen32_bmp_old = SelectBitmap(vscreen32_dc, render::vscreen32_bmp);
+		if (vscreen32_dc)
+		{
+			BitBlt(vscreen32_dc,
+				0,
+				0,
+				render::vscreen.Width,
+				render::vscreen.Height,
+				render::vscreen_dc,
+				0,
+				0,
+				SRCCOPY);
+			StretchBlt(
+				dc,
+				xDest,
+				yDest,
+				bmp->Width,
+				bmp->Height,
+				vscreen32_dc,
+				0,
+				0,
+				bmp->Width,
+				bmp->Height,
+				SRCCOPY);
+			SelectBitmap(vscreen32_dc, vscreen32_bmp_old);
+			DeleteDC(vscreen32_dc);
+		}
 		ReleaseDC(hwnd, dc);
 	}
 }

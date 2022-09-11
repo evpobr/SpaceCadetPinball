@@ -3,6 +3,8 @@
 #include "memory.h"
 #include "winmain.h"
 
+#include <windowsx.h>
+
 int render::blit = 0;
 int render::many_dirty, render::many_sprites, render::many_balls;
 render_sprite_type_struct **render::dirty_list, **render::sprite_list, **render::ball_list;
@@ -13,6 +15,7 @@ rectangle_type render::vscreen_rect;
 gdrv_bitmap8 render::vscreen, *render::background_bitmap, render::ball_bitmap[20];
 zmap_header_type render::zscreen;
 HDC render::vscreen_dc;
+HBITMAP render::vscreen32_bmp;
 
 void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height)
 {
@@ -37,6 +40,16 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 	vscreen_rect.Height = height;
 	vscreen.YPosition = 0;
 	vscreen.XPosition = 0;
+
+	BITMAPINFO bmi{};
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biWidth = render::vscreen.Width;
+	bmi.bmiHeader.biHeight = render::vscreen.Height;
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+	bmi.bmiHeader.biCompression = BI_RGB;
+	vscreen32_bmp = CreateDIBitmap(GetDC(nullptr), &bmi.bmiHeader, 0, nullptr, &bmi, DIB_RGB_COLORS);
+
 	gdrv_bitmap8* ballBmp = ball_bitmap;
 	while (ballBmp < &ball_bitmap[20])
 	{
@@ -56,6 +69,10 @@ void render::uninit()
 	if (vscreen_dc)
 	{
 		DeleteDC(vscreen_dc);
+	}
+	if (vscreen32_bmp)
+	{
+		DeleteBitmap(vscreen32_bmp);
 	}
 	gdrv::destroy_bitmap(&vscreen);
 	zdrv::destroy_zmap(&zscreen);
