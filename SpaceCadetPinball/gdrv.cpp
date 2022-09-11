@@ -209,21 +209,18 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 	HDC dc = winmain::_GetDC(hwnd);
 	if (dc)
 	{
-		if (dc)
-		{
-			StretchBlt(
-				dc,
-				xDest,
-				yDest,
-				bmp->Width,
-				bmp->Height,
-				render::vscreen_dc,
-				0,
-				0,
-				bmp->Width,
-				bmp->Height,
-				SRCCOPY);
-		}
+		StretchBlt(
+			dc,
+			xDest,
+			yDest,
+			bmp->Width,
+			bmp->Height,
+			render::vscreen_dc,
+			0,
+			0,
+			bmp->Width,
+			bmp->Height,
+			SRCCOPY);
 		ReleaseDC(hwnd, dc);
 	}
 }
