@@ -299,108 +299,95 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		return 0;
 	}
 
-	if (Msg <= WM_ACTIVATEAPP)
-	{
-		switch (Msg)
-		{
-		case WM_ACTIVATEAPP:
-			if (wParam)
-			{
-				activated = 1;
-				Sound::Activate();
-				if (options::Options.Music && !single_step)
-					midi::play_pb_theme(0);
-				no_time_loss = 1;
-				pinball::adjust_priority(options::Options.PriorityAdj);
-			}
-			else
-			{
-				activated = 0;
-				fullscrn::activate(0);
-				options::menu_check(Menu1_Full_Screen, 0);
-				options::Options.FullScreen = 0;
-				SetThreadPriority(GetCurrentThread(), 0);
-				Sound::Deactivate();
-				midi::music_stop();
-			}
-
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		case WM_KILLFOCUS:
-			has_focus = 0;
-			gdrv::get_focus();
-			pb::loose_focus();
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		case WM_CREATE:
-			{
-				RECT rect{};
-				++memory::critical_allocation;
-
-				GetWindowRect(GetDesktopWindow(), &rect);
-				int width = rect.right - rect.left;
-				int height = rect.bottom - rect.top;
-				pb::window_size(&width, &height);
-
-				auto prevCursor = SetCursor(LoadCursorA(nullptr, IDC_WAIT));
-				gdrv::init(hinst, hWnd);
-
-				auto voiceCount = options::get_int(nullptr, "Voices", 8);
-				if (!Sound::Init(hinst, voiceCount, nullptr))
-					options::menu_set(Menu1_Sounds, 0);
-				Sound::Activate();
-
-				if (!pinball::quickFlag && !midi::music_init(hWnd))
-					options::menu_set(Menu1_Music, 0);
-
-				if (pb::init())
-					_exit(0);
-				SetCursor(prevCursor);
-				auto changeDisplayFg = options::get_int(nullptr, "Change Display", 1);
-				auto menuHandle = GetMenu(hWnd);
-				fullscrn::init(width, height, options::Options.FullScreen, hWnd, menuHandle,
-				               changeDisplayFg);
-
-				--memory::critical_allocation;
-				return DefWindowProcA(hWnd, Msg, wParam, lParam);
-			}
-		case WM_MOVE:
-			no_time_loss = 1;
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		case WM_SETFOCUS:
-			has_focus = 1;
-			no_time_loss = 1;
-			gdrv::get_focus();
-			fullscrn::force_redraw();
-			pb::paint();
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		case WM_PAINT:
-			{
-				PAINTSTRUCT paint{};
-				_BeginPaint(hWnd, &paint);
-				fullscrn::paint();
-				EndPaint(hWnd, &paint);
-				break;
-			}
-		case WM_CLOSE:
-		case WM_QUIT:
-		case WM_DESTROY:
-			end_pause();
-			bQuit = 1;
-			PostQuitMessage(0);
-			fullscrn::shutdown();
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		case WM_ERASEBKGND:
-			break;
-		default:
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
-		}
-		return 0;
-	}
-
 	switch (Msg)
 	{
+	case WM_ACTIVATEAPP:
+		if (wParam)
+		{
+			activated = 1;
+			Sound::Activate();
+			if (options::Options.Music && !single_step)
+				midi::play_pb_theme(0);
+			no_time_loss = 1;
+			pinball::adjust_priority(options::Options.PriorityAdj);
+		}
+		else
+		{
+			activated = 0;
+			fullscrn::activate(0);
+			options::menu_check(Menu1_Full_Screen, 0);
+			options::Options.FullScreen = 0;
+			SetThreadPriority(GetCurrentThread(), 0);
+			Sound::Deactivate();
+			midi::music_stop();
+		}
+		break;
+	case WM_KILLFOCUS:
+		has_focus = 0;
+		gdrv::get_focus();
+		pb::loose_focus();
+		break;
+	case WM_CREATE:
+		{
+			RECT rect{};
+			++memory::critical_allocation;
+
+			GetWindowRect(GetDesktopWindow(), &rect);
+			int width = rect.right - rect.left;
+			int height = rect.bottom - rect.top;
+			pb::window_size(&width, &height);
+
+			auto prevCursor = SetCursor(LoadCursorA(nullptr, IDC_WAIT));
+			gdrv::init(hinst, hWnd);
+
+			auto voiceCount = options::get_int(nullptr, "Voices", 8);
+			if (!Sound::Init(hinst, voiceCount, nullptr))
+				options::menu_set(Menu1_Sounds, 0);
+			Sound::Activate();
+
+			if (!pinball::quickFlag && !midi::music_init(hWnd))
+				options::menu_set(Menu1_Music, 0);
+
+			if (pb::init())
+				_exit(0);
+			SetCursor(prevCursor);
+			auto changeDisplayFg = options::get_int(nullptr, "Change Display", 1);
+			auto menuHandle = GetMenu(hWnd);
+			fullscrn::init(width, height, options::Options.FullScreen, hWnd, menuHandle,
+							changeDisplayFg);
+
+			--memory::critical_allocation;
+		}
+		break;
+	case WM_MOVE:
+		no_time_loss = 1;
+		break;
+	case WM_SETFOCUS:
+		has_focus = 1;
+		no_time_loss = 1;
+		gdrv::get_focus();
+		fullscrn::force_redraw();
+		pb::paint();
+		break;
+	case WM_PAINT:
+		{
+			PAINTSTRUCT paint{};
+			_BeginPaint(hWnd, &paint);
+			fullscrn::paint();
+			EndPaint(hWnd, &paint);
+		}
+		break;
+	case WM_DESTROY:
+		end_pause();
+		bQuit = 1;
+		PostQuitMessage(0);
+		fullscrn::shutdown();
+		break;
+	case WM_ERASEBKGND:
+		return 1;
 	case WM_MENUSELECT:
 		if (lParam)
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		if (fullscrn::screen_mode)
 			fullscrn::set_menu_mode(0);
 		return 0;
@@ -408,20 +395,20 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		no_time_loss = 1;
 		if (fullscrn::screen_mode)
 			fullscrn::set_menu_mode(1);
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_GETMINMAXINFO:
 		fullscrn::getminmaxinfo((MINMAXINFO*)lParam);
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_DISPLAYCHANGE:
 		if (fullscrn::displaychange())
 		{
 			options::Options.FullScreen = 0;
 			options::menu_check(Menu1_Full_Screen, 0);
 		}
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_KEYUP:
 		pb::keyup(wParam);
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_KEYDOWN:
 		if (!(lParam & 0x40000000))
 			pb::keydown(wParam);
@@ -456,21 +443,21 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		{
 		case 'H':
 			DispGRhistory = 1;
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		case 'Y':
 			SetWindowTextA(hWnd, "Pinball");
 			DispFrameRate = DispFrameRate == 0;
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		case VK_F1:
 			pb::frame(10);
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		case VK_F15:
 			single_step = single_step == 0;
 			if (single_step == 0)
 				no_time_loss = 1;
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		default:
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		}
 	case WM_SYSCOMMAND:
 		switch (wParam & 0xFFF0)
@@ -482,17 +469,17 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		case SC_MINIMIZE:
 			if (!single_step)
 				pause();
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		case SC_SCREENSAVE:
 			fullscrn::activate(0);
-			return DefWindowProcA(hWnd, Msg, wParam, lParam);
+			break;
 		default: break;
 		}
 		end_pause();
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_INITMENU:
 		no_time_loss = 1;
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_COMMAND:
 		no_time_loss = 1;
 		switch (wParam)
@@ -586,7 +573,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		default:
 			break;
 		}
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_LBUTTONDOWN:
 		if (pb::game_mode)
 		{
@@ -609,7 +596,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 			SetCursor(mouse_hsave);
 			ReleaseCapture();
 		}
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_RBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 		if (pb::game_mode)
@@ -622,10 +609,10 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 			options::menu_check(Menu1_Full_Screen, 0);
 			fullscrn::set_screen_mode(options::Options.FullScreen);
 		}
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_PALETTECHANGED:
 		InvalidateRect(hWnd, nullptr, 0);
-		return DefWindowProcA(hWnd, Msg, wParam, lParam);
+		break;
 	case WM_POINTERDEVICEINRANGE | LB_ADDSTRING:
 		if (wParam == 1)
 			midi::restart_midi_seq(lParam);
