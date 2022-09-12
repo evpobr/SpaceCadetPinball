@@ -201,33 +201,31 @@ char* partman::field(datFileStruct* datFile, int groupIndex, datFieldTypes targe
 char* partman::field_nth(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType, int skipFirstN)
 {
 	datGroupData* groupData = datFile->GroupData[groupIndex];
-	int entryCount = groupData->EntryCount, skipCount = 0, entryIndex = 0;
-	if (0 < entryCount)
+	int skipCount = 0;
+	for (int entryIndex = 0; entryIndex < groupData->EntryCount; entryIndex++)
 	{
-		datEntryData* entry = groupData->Entries;
-		do
+		datEntryData* entry = &groupData->Entries[entryIndex];
+		auto entryType = entry->EntryType;
+		if (entryType == targetEntryType)
 		{
-			auto entryType = entry->EntryType;
-			if (entryType == targetEntryType)
+			if (skipCount == skipFirstN)
 			{
-				if (skipCount == skipFirstN)
-				{
-					return entry->Buffer;
-				}
-				skipCount++;
+				return entry->Buffer;
 			}
 			else
 			{
-				if (targetEntryType < entryType)
-				{
-					return nullptr;
-				}
+				skipCount++;
 			}
-			entryIndex++;
-			entry++;
 		}
-		while (entryIndex < entryCount);
+		else
+		{
+			if (targetEntryType < entryType)
+			{
+				return nullptr;
+			}
+		}
 	}
+
 	return nullptr;
 }
 
