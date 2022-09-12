@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "TCollisionComponent.h"
+
 #include "loader.h"
 #include "maths.h"
 #include "objlist_class.h"

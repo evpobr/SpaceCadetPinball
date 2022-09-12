@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "TTextBoxMessage.h"
+
 #include "memory.h"
 #include "pb.h"
 

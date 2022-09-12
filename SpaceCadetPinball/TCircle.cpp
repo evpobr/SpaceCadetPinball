@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TCircle.h"
 
 #include "TBall.h"

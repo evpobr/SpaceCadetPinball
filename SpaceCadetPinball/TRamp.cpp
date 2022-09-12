@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TRamp.h"
-
 
 #include "control.h"
 #include "loader.h"
@@ -11,6 +9,9 @@
 #include "TPinballTable.h"
 #include "TTableLayer.h"
 
+#include <algorithm>
+
+using namespace std;
 
 TRamp::TRamp(TPinballTable* table, int groupIndex) : TCollisionComponent(table, groupIndex, false)
 {

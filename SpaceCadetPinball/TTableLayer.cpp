@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TTableLayer.h"
 
 #include "loader.h"
@@ -8,6 +7,10 @@
 #include "TBall.h"
 #include "TLine.h"
 #include "TPinballTable.h"
+
+#include <cmath>
+
+using namespace std;
 
 TEdgeManager* TTableLayer::edge_manager;
 

@@ -1,7 +1,3 @@
-#include "pch.h"
-
-#include <cstdint>
-
 #include "score.h"
 #include "loader.h"
 #include "memory.h"
@@ -9,6 +5,8 @@
 #include "render.h"
 #include "TDrain.h"
 #include "winmain.h"
+
+#include <cstdint>
 
 #include <algorithm>
 

@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TOneway.h"
-
 
 #include "control.h"
 #include "loader.h"

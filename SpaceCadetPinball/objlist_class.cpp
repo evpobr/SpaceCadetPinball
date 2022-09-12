@@ -1,8 +1,9 @@
-#include  "pch.h"
 #include "objlist_class.h"
-#include <cstdlib>
 
 #include "memory.h"
+
+#include <cstdlib>
+
 // v1 from Ida
 
 objlist_class::objlist_class(int SizeInt, int growSize)

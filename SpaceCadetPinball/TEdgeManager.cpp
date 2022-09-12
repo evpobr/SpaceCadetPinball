@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TEdgeManager.h"
-
 
 #include "maths.h"
 #include "objlist_class.h"
@@ -8,6 +6,11 @@
 #include "TEdgeBox.h"
 #include "TEdgeSegment.h"
 #include "TTableLayer.h"
+
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
 
 TEdgeManager::TEdgeManager(float posX, float posY, float width, float height)
 {
@@ -29,12 +32,12 @@ TEdgeManager::~TEdgeManager()
 
 int TEdgeManager::box_x(float x)
 {
-	return static_cast<int>((max(0, min(floor((x - X) * AdvanceXInv), (MaxBoxX - 1)))));
+	return static_cast<int>(max(0.0f,  min(floor((x - X) * AdvanceXInv), static_cast<float>(MaxBoxX - 1))));
 }
 
 int TEdgeManager::box_y(float y)
 {
-	return static_cast<int>((max(0, min(floor((y - Y) * AdvanceYInv), (MaxBoxY - 1)))));
+	return static_cast<int>(max(0.0f, min(floor((y - Y) * AdvanceYInv), static_cast<float>(MaxBoxY - 1))));
 }
 
 int TEdgeManager::increment_box_x(int x)

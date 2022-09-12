@@ -1,11 +1,8 @@
-#include "pch.h"
-
-#include <cstdint>
-
 #include "fullscrn.h"
 #include "render.h"
 #include "winmain.h"
 
+#include <cstdint>
 
 int fullscrn::screen_mode;
 HWND fullscrn::hWnd;

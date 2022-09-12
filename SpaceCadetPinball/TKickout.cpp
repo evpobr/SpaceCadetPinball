@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TKickout.h"
-
 
 #include "control.h"
 #include "loader.h"

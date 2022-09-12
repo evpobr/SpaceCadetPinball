@@ -22,7 +22,7 @@ public:
 	int SpinDirection;
 	int BmpIndex;
 	int Timer;
-	TEdgeSegment* PrevCollider;
+	class TEdgeSegment* PrevCollider;
 	int Scores[2];
 };
 

@@ -1,5 +1,8 @@
-#include "pch.h"
 #include "proj.h"
+
+#include <cstring>
+
+using namespace std;
 
 mat4_row_major proj::matrix;
 float proj::d_, proj::centerx, proj::centery;

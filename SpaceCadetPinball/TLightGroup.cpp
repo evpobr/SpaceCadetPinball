@@ -1,7 +1,4 @@
-#include "pch.h"
 #include "TLightGroup.h"
-
-#include <cstdint>
 
 #include "control.h"
 #include "loader.h"
@@ -9,6 +6,8 @@
 #include "timer.h"
 #include "TLight.h"
 #include "TPinballTable.h"
+
+#include <cstdint>
 
 TLightGroup::TLightGroup(TPinballTable* table, int groupIndex) : TPinballComponent(table, groupIndex, false)
 {

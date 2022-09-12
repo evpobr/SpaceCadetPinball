@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "render.h"
+
 #include "memory.h"
 #include "winmain.h"
 

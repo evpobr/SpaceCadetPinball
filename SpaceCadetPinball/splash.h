@@ -1,5 +1,7 @@
 #pragma once
 
+#include <windows.h>
+
 struct LOGPALETTEx256;
 
 struct splash_struct

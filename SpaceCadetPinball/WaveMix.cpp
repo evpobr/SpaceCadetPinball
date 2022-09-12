@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "WaveMix.h"
 
 #include "pinball.h"

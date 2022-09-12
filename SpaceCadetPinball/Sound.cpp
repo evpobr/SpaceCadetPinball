@@ -1,9 +1,12 @@
-#include "pch.h"
 #include "Sound.h"
 
 #include "pinball.h"
 #include "WaveMix.h"
 #include "winmain.h"
+
+#include <cstdio>
+
+using namespace std;
 
 int Sound::num_channels;
 HWND Sound::wavemix_window;

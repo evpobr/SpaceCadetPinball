@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TRollover.h"
-
 
 #include "control.h"
 #include "gdrv.h"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <windows.h>
+
 #include <cstdint>
 
 enum class datFieldTypes : int16_t
@@ -110,14 +112,14 @@ static_assert(sizeof(dat16BitBmpHeader) == 14, "Wrong size of zmap_header_type")
 class partman
 {
 public:
-	static datFileStruct* load_records(LPCSTR lpFileName);
+	static datFileStruct* load_records(const char* lpFileName);
 	static void unload_records(datFileStruct* datFile);
 	static char* field_nth(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType, int skipFirstN);
 	static char* field(datFileStruct* datFile, int groupIndex, datFieldTypes entryType);
 	static int field_size_nth(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType, int skipFirstN);
 	static int field_size(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType);
-	static int record_labeled(datFileStruct* datFile, LPCSTR targetGroupName);
-	static char* field_labeled(datFileStruct* datFile, LPCSTR lpString, datFieldTypes fieldType);
+	static int record_labeled(datFileStruct* datFile, const char* targetGroupName);
+	static char* field_labeled(datFileStruct* datFile, const char* lpString, datFieldTypes fieldType);
 private:
 	static short _field_size[];
 	static char _lread_char(HFILE hFile);

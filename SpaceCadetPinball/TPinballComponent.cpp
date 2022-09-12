@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "TPinballComponent.h"
+
 #include "loader.h"
 #include "objlist_class.h"
 #include "render.h"

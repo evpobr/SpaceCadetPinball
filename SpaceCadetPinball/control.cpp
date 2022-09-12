@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "control.h"
 
 #include "objlist_class.h"
@@ -27,6 +26,10 @@
 #include "TRamp.h"
 #include "TPlunger.h"
 #include "TWall.h"
+
+#include <cstdio>
+
+using namespace std;
 
 int control::pbctrl_state;
 

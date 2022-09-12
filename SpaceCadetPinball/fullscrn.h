@@ -1,5 +1,8 @@
 #pragma once
+
 #include "maths.h"
+
+#include <windows.h>
 
 #define BYTEn(x, n)   (*((unsigned char*)&(x)+n))
 #define BYTE1(x)   BYTEn(x,  1)         // byte 1 (counting from 0)

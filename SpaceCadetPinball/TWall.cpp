@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TWall.h"
-
 
 #include "control.h"
 #include "render.h"

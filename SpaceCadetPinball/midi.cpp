@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "midi.h"
 
 #include "pinball.h"

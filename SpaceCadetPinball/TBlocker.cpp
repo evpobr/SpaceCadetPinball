@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TBlocker.h"
-
 
 #include "control.h"
 #include "loader.h"

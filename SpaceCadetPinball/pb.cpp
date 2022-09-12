@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "pb.h"
-
 
 #include "control.h"
 #include "high_score.h"
@@ -22,6 +20,10 @@
 #include "TLightGroup.h"
 #include "TPlunger.h"
 #include "TTableLayer.h"
+
+#include <cstdio>
+
+using namespace std;
 
 TPinballTable* pb::MainTable = nullptr;
 datFileStruct* pb::record_table = nullptr;

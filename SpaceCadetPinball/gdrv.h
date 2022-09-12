@@ -1,5 +1,7 @@
 #pragma once
 
+#include <windows.h>
+
 #include <cstdint>
 
 enum class BitmapType : char

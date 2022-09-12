@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "splash.h"
-
 
 #include "memory.h"
 #include "pinball.h"

@@ -1,9 +1,11 @@
-#include "pch.h"
 #include "maths.h"
 
 #include "TBall.h"
 #include "TFlipperEdge.h"
 
+#include <cmath>
+
+using namespace std;
 
 void maths::enclosing_box(rectangle_type* rect1, rectangle_type* rect2, rectangle_type* dstRect)
 {

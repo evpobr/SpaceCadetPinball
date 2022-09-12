@@ -1,10 +1,13 @@
-#include "pch.h"
 #include "TFlipperEdge.h"
-
 
 #include "TLine.h"
 #include "TPinballTable.h"
 #include "TTableLayer.h"
+
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
 
 float TFlipperEdge::flipper_sin_angle, TFlipperEdge::flipper_cos_angle;
 vector_type TFlipperEdge::A1, TFlipperEdge::A2, TFlipperEdge::B1, TFlipperEdge::B2, TFlipperEdge::T1;
@@ -428,7 +431,7 @@ float TFlipperEdge::flipper_angle(float timeNow)
 	else
 		angle = 1.0;
 
-	angle = min(1, max(angle, 0));
+	angle = min(1.0f, max(angle, 0.0f));
 	if (FlipperFlag == 2)
 		angle = 1.0f - angle;
 	return angle * AngleMax;

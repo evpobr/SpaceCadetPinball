@@ -1,11 +1,13 @@
-﻿#include "pch.h"
-#include "loader.h"
+﻿#include "loader.h"
 #include "memory.h"
 #include "partman.h"
 #include "pinball.h"
 #include "Sound.h"
 #include "zdrv.h"
 
+#include <cmath>
+
+using namespace std;
 
 errorMsg loader::loader_errors[] =
 {

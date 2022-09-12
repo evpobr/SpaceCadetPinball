@@ -1,5 +1,8 @@
-#include "pch.h"
 #include "memory.h"
+
+#include <cstdlib>
+
+using namespace std;
 
 unsigned int memory::use_total;
 int memory::critical_allocation;

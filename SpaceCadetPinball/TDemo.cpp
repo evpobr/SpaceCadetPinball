@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TDemo.h"
-
 
 #include "loader.h"
 #include "pb.h"

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TTextBox.h"
 
 #include "control.h"

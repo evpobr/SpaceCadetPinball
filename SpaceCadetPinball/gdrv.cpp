@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include <windowsx.h>
 
 #include "gdrv.h"

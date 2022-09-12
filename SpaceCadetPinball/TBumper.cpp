@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TBumper.h"
-
 
 #include "control.h"
 #include "loader.h"

@@ -1,7 +1,3 @@
-#include "pch.h"
-
-#include <cstdint>
-
 #include "options.h"
 
 #include "fullscrn.h"
@@ -10,6 +6,8 @@
 #include "resource.h"
 #include "Sound.h"
 #include "winmain.h"
+
+#include <cstdint>
 
 LPCSTR options::OptionsRegPath;
 LPSTR options::OptionsRegPathCur;

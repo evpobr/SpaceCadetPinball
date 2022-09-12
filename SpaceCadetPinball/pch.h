@@ -6,25 +6,28 @@
 //   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
 
-#ifndef PCH_H
-#define PCH_H
+#pragma once
+
+#define _WIN32_WINNT  0x0501
+#define NTDDI_VERSION 0x05010000
+
+#define NOMINMAX
+
+#include <sdkddkver.h>
 
 // TODO: add headers that you want to pre-compile here
-#include <Windows.h>
-#include <cstdio>
-#include <cassert>
-#include <cmath>
-#include <CommCtrl.h>
-#include <htmlhelp.h>
-#include <type_traits> /*For control template*/
-//#include <cstdlib>
+#include <windows.h>
 
-/*Use (void) to silent unused warnings.*/
-#define assertm(exp, msg) assert(((void)msg, exp))
+#include <commctrl.h>
+#include <htmlhelp.h>
+#include <windowsx.h>
+
+#include <algorithm>
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
+#include <type_traits> /*For control template*/
 
 /*Sound uses PlaySound*/
 #undef PlaySound
-
-#include <algorithm>
-
-#endif //PCH_H

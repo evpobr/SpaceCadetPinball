@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TTimer.h"
 
 #include "control.h"

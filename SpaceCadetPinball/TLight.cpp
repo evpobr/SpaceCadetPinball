@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TLight.h"
-
 
 #include "control.h"
 #include "loader.h"

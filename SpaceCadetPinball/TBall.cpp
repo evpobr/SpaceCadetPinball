@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TBall.h"
-
 
 #include "loader.h"
 #include "maths.h"

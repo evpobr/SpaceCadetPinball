@@ -1,10 +1,13 @@
-#include "pch.h"
 #include "TEdgeSegment.h"
 
 #include "objlist_class.h"
 #include "TCircle.h"
 #include "TCollisionComponent.h"
 #include "TLine.h"
+
+#include <cmath>
+
+using namespace std;
 
 TEdgeSegment::TEdgeSegment(TCollisionComponent* collComp, char* activeFlag, unsigned collisionGroup)
 {

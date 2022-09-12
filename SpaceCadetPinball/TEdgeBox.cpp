@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TEdgeBox.h"
 
 #include "objlist_class.h"

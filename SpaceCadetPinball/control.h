@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+#include <type_traits>
+
 class TLight;
 class TSound;
 class TPinballTable;
@@ -7,9 +10,9 @@ class TPinballComponent;
 
 struct component_tag_base
 {
-	LPCSTR Name;
+	const char* Name;
 
-	component_tag_base(LPCSTR name)
+	component_tag_base(const char* name)
 	{
 		Name = name;
 	}
@@ -26,7 +29,7 @@ struct component_tag : component_tag_base
 	static_assert(std::is_base_of<TPinballComponent, T>::value, "T must inherit from TPinballComponent");
 	T* Component;
 
-	component_tag(LPCSTR name, TPinballComponent* component): component_tag_base(name)
+	component_tag(const char* name, TPinballComponent* component): component_tag_base(name)
 	{
 		component_tag::SetComponent(component);
 	}
@@ -40,7 +43,7 @@ struct component_tag : component_tag_base
 	{
 		Component = dynamic_cast<T*>(comp);
 		if (comp)
-			assertm(Component, "Wrong component type");
+			assert("Wrong component type");
 	}
 };
 

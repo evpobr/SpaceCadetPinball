@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "high_score.h"
 
 #include "fullscrn.h"

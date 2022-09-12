@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "partman.h"
 #include "gdrv.h"
 #include "memory.h"
@@ -10,7 +9,7 @@ short partman::_field_size[] =
 };
 
 
-datFileStruct* partman::load_records(LPCSTR lpFileName)
+datFileStruct* partman::load_records(const char* lpFileName)
 {
 	_OFSTRUCT ReOpenBuff{};
 	datFileHeader header{};
@@ -286,7 +285,7 @@ int partman::field_size(datFileStruct* datFile, int groupIndex, datFieldTypes ta
 	return field_size_nth(datFile, groupIndex, targetEntryType, 0);
 }
 
-int partman::record_labeled(datFileStruct* datFile, LPCSTR targetGroupName)
+int partman::record_labeled(datFileStruct* datFile, const char* targetGroupName)
 {
 	int trgGroupNameLen = lstrlenA(targetGroupName);
 	int groupIndex = datFile->NumberOfGroups;
@@ -301,7 +300,7 @@ int partman::record_labeled(datFileStruct* datFile, LPCSTR targetGroupName)
 			bool found = trgGroupNameLen == 0;
 			if (trgGroupNameLen > 0)
 			{
-				LPCSTR targetNamePtr = targetGroupName;
+				const char* targetNamePtr = targetGroupName;
 				do
 				{
 					if (*targetNamePtr != targetNamePtr[groupName - targetGroupName])
@@ -319,7 +318,7 @@ int partman::record_labeled(datFileStruct* datFile, LPCSTR targetGroupName)
 	return groupIndex;
 }
 
-char* partman::field_labeled(datFileStruct* datFile, LPCSTR lpString, datFieldTypes fieldType)
+char* partman::field_labeled(datFileStruct* datFile, const char* lpString, datFieldTypes fieldType)
 {
 	char* result;
 	int groupIndex = record_labeled(datFile, lpString);

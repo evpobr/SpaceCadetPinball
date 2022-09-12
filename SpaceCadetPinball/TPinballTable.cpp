@@ -1,6 +1,4 @@
-#include "pch.h"
 #include "TPinballTable.h"
-
 
 #include "control.h"
 #include "loader.h"
@@ -221,7 +219,7 @@ TPinballTable::~TPinballTable()
 	delete ComponentList;
 }
 
-TPinballComponent* TPinballTable::find_component(LPCSTR componentName)
+TPinballComponent* TPinballTable::find_component(const char* componentName)
 {
 	int objCount = ComponentList->Count();
 	if (objCount > 0)

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "winmain.h"
 
 #include "fullscrn.h"
@@ -10,6 +9,13 @@
 #include "Sound.h"
 #include "resource.h"
 #include "splash.h"
+
+#include <commctrl.h>
+#include <htmlhelp.h>
+
+#include <cstdio>
+
+using namespace std;
 
 HINSTANCE winmain::hinst = nullptr;
 HWND winmain::hwnd_frame = nullptr;
@@ -613,7 +619,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 	case WM_PALETTECHANGED:
 		InvalidateRect(hWnd, nullptr, 0);
 		break;
-	case WM_POINTERDEVICEINRANGE | LB_ADDSTRING:
+	case MM_MCINOTIFY:
 		if (wParam == 1)
 			midi::restart_midi_seq(lParam);
 		return DefWindowProcA(hWnd, Msg, wParam, lParam);

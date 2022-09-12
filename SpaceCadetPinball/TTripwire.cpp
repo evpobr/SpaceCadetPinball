@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "TTripwire.h"
 
 #include "control.h"

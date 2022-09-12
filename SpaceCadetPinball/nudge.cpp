@@ -1,12 +1,14 @@
-#include "pch.h"
 #include "nudge.h"
-
 
 #include "objlist_class.h"
 #include "pb.h"
 #include "render.h"
 #include "TBall.h"
 #include "timer.h"
+
+#include <cmath>
+
+using namespace std;
 
 int nudge::nudged_left;
 int nudge::nudged_right;
