@@ -57,7 +57,7 @@ public:
 	static void blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth,
 	                          int DestHeight);
 	static void end_blit_sequence();
-	static void blit(int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
+	static void blit(HDC vdc, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
 	static void blat(gdrv_bitmap8* bmp, int xDest, int yDest);
 	static void fill_bitmap(HDC dc, int width, int height, int xOff, int yOff, char fillChar);
 	static void fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar);
@@ -67,7 +67,7 @@ public:
 	                        int srcXOff, int srcYOff);
 	static void copy_bitmap_w_transparency(HDC dstDC, int width, int height, int xOff, int yOff,
 	                                       gdrv_bitmap8* srcBmp, int srcXOff, int srcYOff);
-	static void grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, int height, int a6);
+	static void grtext_draw_ttext_in_box(HDC dstDC, LPCSTR text, int xOff, int yOff, int width, int height, int a6);
 private:
 	static HWND hwnd;
 	static HINSTANCE hinst;

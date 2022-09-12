@@ -543,13 +543,21 @@ void render::shift(int offsetX, int offsetY, int xSrc, int ySrc, int DestWidth, 
 	offset_x += offsetX;
 	offset_y += offsetY;
 	paint_balls();
-	gdrv::blit(
-		xSrc,
-		ySrc,
-		xSrc + offset_x + vscreen.XPosition,
-		ySrc + offset_y + vscreen.YPosition,
-		DestWidth,
-		DestHeight);
+	HDC vdc = CreateCompatibleDC(nullptr);
+	if (vdc)
+	{
+		HBITMAP h = SelectBitmap(vdc, vscreen.Handle);
+		gdrv::blit(
+			vdc,
+			xSrc,
+			ySrc,
+			xSrc + offset_x + vscreen.XPosition,
+			ySrc + offset_y + vscreen.YPosition,
+			DestWidth,
+			DestHeight);
+		SelectBitmap(vdc, vscreen.Handle);
+		DeleteDC(vdc);
+	}
 	unpaint_balls();
 }
 

@@ -160,26 +160,34 @@ void score::erase(scoreStruct* score, int blitFlag)
 {
 	if (score)
 	{
-		if (score->BackgroundBmp)
-			gdrv::copy_bitmap(
-				render::vscreen_dc,
-				score->Width,
-				score->Height,
-				score->OffsetX,
-				score->OffsetY,
-				score->BackgroundBmp,
-				score->OffsetX,
-				score->OffsetY);
-		else
-			gdrv::fill_bitmap(&render::vscreen, score->Width, score->Height, score->OffsetX, score->OffsetY, 0);
-		if (blitFlag)
-			gdrv::blit(
-				score->OffsetX,
-				score->OffsetY,
-				score->OffsetX + render::vscreen.XPosition,
-				score->OffsetY + render::vscreen.YPosition,
-				score->Width,
-				score->Height);
+		HDC vdc = CreateCompatibleDC(nullptr);
+		if (vdc)
+		{
+			HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+			if (score->BackgroundBmp)
+				gdrv::copy_bitmap(
+					render::vscreen_dc,
+					score->Width,
+					score->Height,
+					score->OffsetX,
+					score->OffsetY,
+					score->BackgroundBmp,
+					score->OffsetX,
+					score->OffsetY);
+			else
+				gdrv::fill_bitmap(vdc, score->Width, score->Height, score->OffsetX, score->OffsetY, 0);
+			if (blitFlag)
+				gdrv::blit(
+					vdc,
+					score->OffsetX,
+					score->OffsetY,
+					score->OffsetX + render::vscreen.XPosition,
+					score->OffsetY + render::vscreen.YPosition,
+					score->Width,
+					score->Height);
+			SelectBitmap(vdc, render::vscreen.Handle);
+			DeleteDC(vdc);
+		}
 	}
 }
 
@@ -220,13 +228,21 @@ void score::update(scoreStruct* score)
 					gdrv::copy_bitmap(render::vscreen_dc, width, height, x, y, bmp, 0, 0);
 			}
 		}
-		gdrv::blit(
-			score->OffsetX,
-			score->OffsetY,
-			score->OffsetX + render::vscreen.XPosition,
-			score->OffsetY + render::vscreen.YPosition,
-			score->Width,
-			score->Height);
+		HDC vdc = CreateCompatibleDC(nullptr);
+		if (vdc)
+		{
+			HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+			gdrv::blit(
+				vdc,
+				score->OffsetX,
+				score->OffsetY,
+				score->OffsetX + render::vscreen.XPosition,
+				score->OffsetY + render::vscreen.YPosition,
+				score->Width,
+				score->Height);
+			SelectBitmap(vdc, h);
+			DeleteDC(vdc);
+		}
 	}
 }
 

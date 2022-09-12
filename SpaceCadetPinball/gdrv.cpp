@@ -177,9 +177,8 @@ void gdrv::end_blit_sequence()
 	ReleaseDC(hwnd, sequence_hdc);
 }
 
-void gdrv::blit(int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
+void gdrv::blit(HDC vdc, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	HDC vdc = CreateCompatibleDC(nullptr);
 	if (vdc)
 	{
 		HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
@@ -325,11 +324,11 @@ void gdrv::copy_bitmap_w_transparency(HDC dstDC, int width, int height, int xOff
 }
 
 
-void gdrv::grtext_draw_ttext_in_box(LPCSTR text, int xOff, int yOff, int width, int height, int a6)
+void gdrv::grtext_draw_ttext_in_box(HDC dstDC, LPCSTR text, int xOff, int yOff, int width, int height, int a6)
 {
 	tagRECT rc{};
 
-	HDC dc = render::vscreen_dc;
+	HDC dc = dstDC;
 	rc.left = xOff;
 	rc.right = width + xOff;
 	rc.top = yOff;

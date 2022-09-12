@@ -69,26 +69,34 @@ void TTextBox::TimerExpired(int timerId, void* caller)
 
 void TTextBox::Clear()
 {
-	gdrv_bitmap8* bmp = BgBmp;
-	if (bmp)
-		gdrv::copy_bitmap(
-			render::vscreen_dc,
-			Width,
-			Height,
+	HDC vdc = CreateCompatibleDC(nullptr);
+	if (vdc)
+	{
+		HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+		gdrv_bitmap8* bmp = BgBmp;
+		if (bmp)
+			gdrv::copy_bitmap(
+				vdc,
+				Width,
+				Height,
+				OffsetX,
+				OffsetY,
+				bmp,
+				OffsetX,
+				OffsetY);
+		else
+			gdrv::fill_bitmap(vdc, Width, Height, OffsetX, OffsetY, 0);
+		gdrv::blit(
+			vdc,
 			OffsetX,
 			OffsetY,
-			bmp,
-			OffsetX,
-			OffsetY);
-	else
-		gdrv::fill_bitmap(&render::vscreen, Width, Height, OffsetX, OffsetY, 0);
-	gdrv::blit(
-		OffsetX,
-		OffsetY,
-		OffsetX + render::vscreen.XPosition,
-		OffsetY + render::vscreen.YPosition,
-		Width,
-		Height);
+			OffsetX + render::vscreen.XPosition,
+			OffsetY + render::vscreen.YPosition,
+			Width,
+			Height);
+		SelectBitmap(vdc, h);
+		DeleteDC(vdc);
+	}
 	if (Timer)
 	{
 		if (Timer != -1)
@@ -179,20 +187,29 @@ void TTextBox::Draw()
 				auto font = Font;
 				if (!font)
 				{
-					gdrv::blit(
-						OffsetX,
-						OffsetY,
-						OffsetX + render::vscreen.XPosition,
-						OffsetY + render::vscreen.YPosition,
-						Width,
-						Height);
-					gdrv::grtext_draw_ttext_in_box(
-						Message1->Text,
-						render::vscreen.XPosition + OffsetX,
-						render::vscreen.YPosition + OffsetY,
-						Width,
-						Height,
-						255);
+					HDC vdc = CreateCompatibleDC(nullptr);
+					if (vdc)
+					{
+						HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+						gdrv::blit(
+							vdc,
+							OffsetX,
+							OffsetY,
+							OffsetX + render::vscreen.XPosition,
+							OffsetY + render::vscreen.YPosition,
+							Width,
+							Height);
+						gdrv::grtext_draw_ttext_in_box(
+							vdc,
+							Message1->Text,
+							render::vscreen.XPosition + OffsetX,
+							render::vscreen.YPosition + OffsetY,
+							Width,
+							Height,
+							255);
+						SelectObject(vdc, h);
+						DeleteDC(vdc);
+					}
 					return;
 				}
 				auto text = Message1->Text;
@@ -280,11 +297,19 @@ void TTextBox::Draw()
 		Message1 = nextMessage;
 	}
 
-	gdrv::blit(
-		OffsetX,
-		OffsetY,
-		OffsetX + render::vscreen.XPosition,
-		OffsetY + render::vscreen.YPosition,
-		Width,
-		Height);
+	HDC vdc = CreateCompatibleDC(nullptr);
+	if (vdc)
+	{
+		HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+		gdrv::blit(
+			vdc,
+			OffsetX,
+			OffsetY,
+			OffsetX + render::vscreen.XPosition,
+			OffsetY + render::vscreen.YPosition,
+			Width,
+			Height);
+		SelectObject(vdc, h);
+		DeleteDC(vdc);
+	}
 }
