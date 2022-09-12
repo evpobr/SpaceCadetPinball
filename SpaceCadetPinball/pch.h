@@ -22,6 +22,7 @@
 #include <htmlhelp.h>
 #include <windowsx.h>
 
+#include <array>
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>

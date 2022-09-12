@@ -21,6 +21,8 @@
 #include "TPlunger.h"
 #include "TTableLayer.h"
 
+#include <algorithm>
+#include <array>
 #include <cstdio>
 
 using namespace std;
@@ -33,7 +35,8 @@ high_score_struct pb::highscore_table[5];
 
 int pb::init()
 {
-	float projMat[12], zMin = 0, zScaler = 0;
+	array<float, 12> projMat;
+	float zMin = 0, zScaler = 0;
 	CHAR datFileName[300];
 	CHAR dataFilePath[300];
 
@@ -57,13 +60,13 @@ int pb::init()
 
 	if (cameraInfo)
 	{
-		memcpy(&projMat, cameraInfo, sizeof(float) * 4 * 3);
+		copy_n(cameraInfo, projMat.size(), begin(projMat));
 		cameraInfo += 12;
 
 		auto projCenterX = tableSize[0] * 0.5f;
 		auto projCenterY = tableSize[1] * 0.5f;
 		auto projD = cameraInfo[0];
-		proj::init(projMat, projD, projCenterX, projCenterY);
+		proj::init(projMat.data(), projD, projCenterX, projCenterY);
 		zMin = cameraInfo[1];
 		zScaler = cameraInfo[2];
 	}
