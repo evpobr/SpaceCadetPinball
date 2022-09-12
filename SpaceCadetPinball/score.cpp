@@ -174,7 +174,6 @@ void score::erase(scoreStruct* score, int blitFlag)
 			gdrv::fill_bitmap(&render::vscreen, score->Width, score->Height, score->OffsetX, score->OffsetY, 0);
 		if (blitFlag)
 			gdrv::blit(
-				&render::vscreen,
 				score->OffsetX,
 				score->OffsetY,
 				score->OffsetX + render::vscreen.XPosition,
@@ -222,7 +221,6 @@ void score::update(scoreStruct* score)
 			}
 		}
 		gdrv::blit(
-			&render::vscreen,
 			score->OffsetX,
 			score->OffsetY,
 			score->OffsetX + render::vscreen.XPosition,

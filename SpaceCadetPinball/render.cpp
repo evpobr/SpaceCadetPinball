@@ -544,7 +544,6 @@ void render::shift(int offsetX, int offsetY, int xSrc, int ySrc, int DestWidth, 
 	offset_y += offsetY;
 	paint_balls();
 	gdrv::blit(
-		&vscreen,
 		xSrc,
 		ySrc,
 		xSrc + offset_x + vscreen.XPosition,

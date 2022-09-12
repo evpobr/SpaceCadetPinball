@@ -83,7 +83,6 @@ void TTextBox::Clear()
 	else
 		gdrv::fill_bitmap(&render::vscreen, Width, Height, OffsetX, OffsetY, 0);
 	gdrv::blit(
-		&render::vscreen,
 		OffsetX,
 		OffsetY,
 		OffsetX + render::vscreen.XPosition,
@@ -181,7 +180,6 @@ void TTextBox::Draw()
 				if (!font)
 				{
 					gdrv::blit(
-						&render::vscreen,
 						OffsetX,
 						OffsetY,
 						OffsetX + render::vscreen.XPosition,
@@ -283,7 +281,6 @@ void TTextBox::Draw()
 	}
 
 	gdrv::blit(
-		&render::vscreen,
 		OffsetX,
 		OffsetY,
 		OffsetX + render::vscreen.XPosition,

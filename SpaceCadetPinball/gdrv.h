@@ -57,7 +57,7 @@ public:
 	static void blit_sequence(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth,
 	                          int DestHeight);
 	static void end_blit_sequence();
-	static void blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
+	static void blit(int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight);
 	static void blat(gdrv_bitmap8* bmp, int xDest, int yDest);
 	static void fill_bitmap(HDC dc, int width, int height, int xOff, int yOff, char fillChar);
 	static void fill_bitmap(gdrv_bitmap8* bmp, int width, int height, int xOff, int yOff, char fillChar);

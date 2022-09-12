@@ -177,28 +177,25 @@ void gdrv::end_blit_sequence()
 	ReleaseDC(hwnd, sequence_hdc);
 }
 
-void gdrv::blit(gdrv_bitmap8* bmp, int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
+void gdrv::blit(int xSrc, int ySrcOff, int xDest, int yDest, int DestWidth, int DestHeight)
 {
-	if (render::vscreen_dc)
+	HDC vdc = CreateCompatibleDC(nullptr);
+	if (vdc)
 	{
-		HDC dcSrc = CreateCompatibleDC(render::vscreen_dc);
-		if (dcSrc)
-		{
-			SelectObject(dcSrc, bmp->Handle);
-			StretchBlt(
-				render::vscreen_dc,
-				xDest,
-				yDest,
-				DestWidth,
-				DestHeight,
-				dcSrc,
-				xSrc,
-				bmp->Height - ySrcOff - DestHeight,
-				DestWidth,
-				DestHeight,
-				SRCCOPY);
-			DeleteDC(dcSrc);
-		}
+		HBITMAP h = SelectBitmap(vdc, render::vscreen.Handle);
+		StretchBlt(
+			vdc,
+			xDest,
+			yDest,
+			DestWidth,
+			DestHeight,
+			vdc,
+			xSrc,
+			render::vscreen.Height - ySrcOff - DestHeight,
+			DestWidth,
+			DestHeight,
+			SRCCOPY);
+		DeleteDC(vdc);
 	}
 }
 
