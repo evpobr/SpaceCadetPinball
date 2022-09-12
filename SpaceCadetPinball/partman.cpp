@@ -186,25 +186,15 @@ void partman::unload_records(datFileStruct* datFile)
 char* partman::field(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType)
 {
 	datGroupData* groupData = datFile->GroupData[groupIndex];
-	int entryCount = groupData->EntryCount;
-	int entryIndex = 0;
-	if (entryCount <= 0)
-		return nullptr;
-	datEntryData* entry = groupData->Entries;
-	while (true)
+	for (int entryIndex = 0; entryIndex < groupData->EntryCount; entryIndex++)
 	{
-		auto entryType = entry->EntryType;
-		if (entryType == targetEntryType)
-			break;
-		if (entryType > targetEntryType)
-			return nullptr;
-		++entryIndex;
-		++entry;
-		if (entryIndex < entryCount)
-			continue;
-		return nullptr;
+		auto entry = &groupData->Entries[entryIndex];
+		if (entry->EntryType == targetEntryType)
+		{
+			return entry->Buffer;
+		}
 	}
-	return entry->Buffer;
+	return nullptr;
 }
 
 
