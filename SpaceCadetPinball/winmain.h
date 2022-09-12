@@ -25,7 +25,6 @@ private:
 	static int has_focus, mouse_down, last_mouse_x, last_mouse_y, no_time_loss;
 	static DWORD then, now;
 	static UINT iFrostUniqueMsg;
-	static gdrv_bitmap8 gfr_display;
 	static HCURSOR mouse_hsave;
 
 	static HDC _BeginPaint(HWND hWnd, LPPAINTSTRUCT lpPaint);

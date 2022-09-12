@@ -37,7 +37,6 @@ DWORD winmain::then;
 DWORD winmain::now;
 UINT winmain::iFrostUniqueMsg;
 
-gdrv_bitmap8 winmain::gfr_display{};
 char winmain::DatFileName[300]{};
 
 
@@ -213,17 +212,6 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 					char buf[60];
 					sprintf_s(buf, "Frames/sec = %02.02f", 300.0f / (static_cast<float>(curTime - prevTime) * 0.001f));
 					SetWindowTextA(hwnd_frame, buf);
-
-					if (DispGRhistory)
-					{
-						if (!gfr_display.BmpBufPtr1)
-						{
-							gdrv::create_bitmap(&gfr_display, 400, 15);
-						}
-
-						gdrv::blit(&gfr_display, 0, 0, 0, 0, 300, 10);
-						gdrv::fill_bitmap(&gfr_display, 300, 10, 0, 0, 0);
-					}
 				}
 				prevTime = curTime;
 			}
@@ -266,16 +254,6 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				}
 				else if (pb::frame(curTime - then))
 				{
-					if (gfr_display.BmpBufPtr1)
-					{
-						auto deltaT = now - then + 10;
-						auto fillChar = static_cast<char>(deltaT);
-						if (deltaT > 236)
-						{
-							fillChar = -7;
-						}
-						gdrv::fill_bitmap(&gfr_display, 1, 10, 299 - someTimeCounter, 0, fillChar);
-					}
 					--someTimeCounter;
 					then = now;
 				}
@@ -283,7 +261,6 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		}
 	}
 
-	gdrv::destroy_bitmap(&gfr_display);
 	options::uninit();
 	midi::music_shutdown();
 	pb::uninit();
