@@ -86,9 +86,9 @@ datFileStruct* partman::load_records(const char* lpFileName)
 			break;
 
 		groupData->EntryCount = entryCount;
-		datEntryData* entryData = groupData->Entries;
-		for (auto entryIndex = 0; entryIndex < entryCount; ++entryIndex)
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
 		{
+			datEntryData* entryData = &groupData->Entries[entryIndex];
 			auto entryType = static_cast<datFieldTypes>(_lread_char(fileHandle));
 			entryData->EntryType = entryType;
 
@@ -144,7 +144,6 @@ datFileStruct* partman::load_records(const char* lpFileName)
 
 			entryData->FieldSize = fieldSize;
 			datFile->NumberOfGroups = groupIndex + 1;
-			++entryData;
 		}
 	}
 
