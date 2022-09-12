@@ -158,27 +158,21 @@ datFileStruct* partman::load_records(const char* lpFileName)
 
 void partman::unload_records(datFileStruct* datFile)
 {
-	for (int groupIndex = 0; groupIndex < datFile->NumberOfGroups; ++groupIndex)
+	for (int groupIndex = 0; groupIndex < datFile->NumberOfGroups; groupIndex++)
 	{
 		datGroupData* group = datFile->GroupData[groupIndex];
 		if (group)
 		{
 			int entryIndex = 0;
-			if (group->EntryCount > 0)
+			for (int entryIndex = 0; entryIndex < group->EntryCount; entryIndex++)
 			{
-				datEntryData* entry = group->Entries;
-				do
+				datEntryData* entry = &group->Entries[entryIndex];
+				if (entry->Buffer)
 				{
-					if (entry->Buffer)
-					{
-						if (entry->EntryType == datFieldTypes::Bitmap8bit)
-							gdrv::destroy_bitmap((gdrv_bitmap8*)entry->Buffer);
-						memory::free(entry->Buffer);
-					}
-					++entryIndex;
-					++entry;
+					if (entry->EntryType == datFieldTypes::Bitmap8bit)
+						gdrv::destroy_bitmap((gdrv_bitmap8*)entry->Buffer);
+					memory::free(entry->Buffer);
 				}
-				while (entryIndex < group->EntryCount);
 			}
 			memory::free(group);
 		}
