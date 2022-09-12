@@ -378,7 +378,6 @@ int loader::query_visual(int groupIndex, int groupIndexOffset, visualStruct* vis
 	if (visual->ZMap)
 	{
 		visual->ZMap->ZPtr1 = visual->ZMap->ZBuffer;
-		visual->ZMap->ZPtr2 = visual->ZMap->ZPtr1;
 	}
 
 	auto shortArr = reinterpret_cast<__int16*>(partman::field(loader_table, stateId, datFieldTypes::ShortArray));

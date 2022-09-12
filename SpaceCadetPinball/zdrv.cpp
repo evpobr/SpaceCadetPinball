@@ -11,7 +11,6 @@ int zdrv::create_zmap(zmap_header_type* zmap, int width, int height)
 	zmap->ZPtr1 = bmpBuf;
 	if (!bmpBuf)
 		return -1;
-	zmap->ZPtr2 = bmpBuf;
 	zmap->Width = width;
 	zmap->Height = height;
 	return 0;

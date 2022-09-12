@@ -7,7 +7,6 @@ struct zmap_header_type
 	__int16 Height;
 	__int16 Stride;
 	unsigned __int16* ZPtr1;
-	unsigned __int16* ZPtr2;
 	unsigned __int16 ZBuffer[1];
 };
 
