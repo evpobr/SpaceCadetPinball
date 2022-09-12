@@ -66,9 +66,11 @@ struct datGroupData
 
 struct datFileStruct
 {
-	unsigned short NumberOfGroups;
-	char* Description;
-	datGroupData** GroupData;
+	unsigned short NumberOfGroups = 0;
+	char* Description = nullptr;
+	datGroupData** GroupData = nullptr;
+
+	~datFileStruct();
 };
 
 #pragma pack(push)

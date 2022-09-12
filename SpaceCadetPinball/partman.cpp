@@ -8,6 +8,31 @@ short partman::_field_size[] =
 	2, -1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0
 };
 
+datFileStruct::~datFileStruct()
+{
+	for (int groupIndex = 0; groupIndex < NumberOfGroups; groupIndex++)
+	{
+		datGroupData* group = GroupData[groupIndex];
+		if (group)
+		{
+			int entryIndex = 0;
+			for (int entryIndex = 0; entryIndex < group->EntryCount; entryIndex++)
+			{
+				datEntryData* entry = &group->Entries[entryIndex];
+				if (entry->Buffer)
+				{
+					if (entry->EntryType == datFieldTypes::Bitmap8bit)
+						gdrv::destroy_bitmap((gdrv_bitmap8*)entry->Buffer);
+					memory::free(entry->Buffer);
+				}
+			}
+			memory::free(group);
+		}
+	}
+	if (Description)
+		memory::free(Description);
+	memory::free(GroupData);
+}
 
 datFileStruct* partman::load_records(const char* lpFileName)
 {
@@ -25,7 +50,7 @@ datFileStruct* partman::load_records(const char* lpFileName)
 		_lclose(fileHandle);
 		return nullptr;
 	}
-	auto datFile = (datFileStruct*)memory::allocate(sizeof(datFileStruct));
+	auto datFile = new datFileStruct{};
 	if (!datFile)
 	{
 		_lclose(fileHandle);
@@ -43,7 +68,7 @@ datFileStruct* partman::load_records(const char* lpFileName)
 		if (!descriptionBuf)
 		{
 			_lclose(fileHandle);
-			memory::free(datFile);
+			delete datFile;
 			return nullptr;
 		}
 		lstrcpyA(descriptionBuf, header.Description);
@@ -55,9 +80,7 @@ datFileStruct* partman::load_records(const char* lpFileName)
 		if (!unknownBuf)
 		{
 			_lclose(fileHandle);
-			if (datFile->Description)
-				memory::free(datFile->Description);
-			memory::free(datFile);
+			delete datFile;
 			return nullptr;
 		}
 		_lread(fileHandle, static_cast<void*>(unknownBuf), header.Unknown);
@@ -68,9 +91,7 @@ datFileStruct* partman::load_records(const char* lpFileName)
 	datFile->GroupData = groupDataBuf;
 	if (!groupDataBuf)
 	{
-		if (datFile->Description)
-			memory::free(datFile->Description);
-		memory::free(datFile);
+		delete datFile;
 		return nullptr;
 	}
 
@@ -157,29 +178,7 @@ datFileStruct* partman::load_records(const char* lpFileName)
 
 void partman::unload_records(datFileStruct* datFile)
 {
-	for (int groupIndex = 0; groupIndex < datFile->NumberOfGroups; groupIndex++)
-	{
-		datGroupData* group = datFile->GroupData[groupIndex];
-		if (group)
-		{
-			int entryIndex = 0;
-			for (int entryIndex = 0; entryIndex < group->EntryCount; entryIndex++)
-			{
-				datEntryData* entry = &group->Entries[entryIndex];
-				if (entry->Buffer)
-				{
-					if (entry->EntryType == datFieldTypes::Bitmap8bit)
-						gdrv::destroy_bitmap((gdrv_bitmap8*)entry->Buffer);
-					memory::free(entry->Buffer);
-				}
-			}
-			memory::free(group);
-		}
-	}
-	if (datFile->Description)
-		memory::free(datFile->Description);
-	memory::free(datFile->GroupData);
-	memory::free(datFile);
+	delete datFile;
 }
 
 char* partman::field(datFileStruct* datFile, int groupIndex, datFieldTypes targetEntryType)
