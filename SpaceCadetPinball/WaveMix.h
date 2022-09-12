@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /* flag values for play params */
 #define WMIX_QUEUEWAVE 0x00
 #define WMIX_CLEARQUEUE  0x01
@@ -15,8 +17,8 @@ struct GLOBALS;
 
 struct volume_struct
 {
-	unsigned __int16 L;
-	unsigned __int16 R;
+	uint16_t L;
+	uint16_t R;
 };
 
 
@@ -59,14 +61,14 @@ struct MIXCONFIG
 	DWORD dwFlags;
 	WORD wChannels;
 	WORD wSamplingRate;
-	unsigned __int16 WaveBlockCount;
-	unsigned __int16 WaveBlockLen;
-	__int16 CmixPtrDefaultFlag;
-	unsigned __int16 ResetMixDefaultFlag;
-	unsigned __int16 GoodWavePos;
-	unsigned __int16 wDeviceID;
-	unsigned __int16 PauseBlocks;
-	__int16 ShowDebugDialogs;
+	uint16_t WaveBlockCount;
+	uint16_t WaveBlockLen;
+	int16_t CmixPtrDefaultFlag;
+	uint16_t ResetMixDefaultFlag;
+	uint16_t GoodWavePos;
+	uint16_t wDeviceID;
+	uint16_t PauseBlocks;
+	uint16_t ShowDebugDialogs;
 	HKEY RegistryKey;
 };
 
@@ -88,7 +90,7 @@ struct PLAYQUEUE
 struct GLOBALS
 {
 	WORD wMagic1;
-	__int16 unknown0;
+	int16_t unknown0;
 	HWND hWndApp;
 	int unknown2;
 	HWAVEOUT hWaveOut;
@@ -112,13 +114,12 @@ struct GLOBALS
 	DWORD dwBaseTime;
 	int fGoodGetPos;
 	DWORD dwWaveOutPos;
-	void (*CmixPtr)(unsigned __int8* lpDest, unsigned __int8** rgWaveSrc, volume_struct* volume, int iNumWaves,
-	                unsigned __int16 length);
+	void (*CmixPtr)(uint8_t* lpDest, uint8_t** rgWaveSrc, volume_struct* volume, int iNumWaves, uint16_t length);
 	int (* pfnRemix)(DWORD, CHANNELNODE*);
 	DWORD (* pfnSampleAdjust)(DWORD, DWORD);
 	CHANNELNODE* pWaitList;
-	__int16 wMagic2;
-	__int16 unknown112;
+	int16_t wMagic2;
+	int16_t unknown112;
 };
 
 struct dialog_template
@@ -182,12 +183,12 @@ private:
 	static DWORD SubFactor(DWORD a1, DWORD a2);
 	static DWORD AddFactor(DWORD a1, DWORD a2);
 	static dialog_template* MakeSettingsDlgTemplate();
-	static dialog_template* MakeDlgTemplate(unsigned* totalSize, unsigned style, __int16 x, __int16 y, __int16 cx,
-	                                        __int16 cy,
+	static dialog_template* MakeDlgTemplate(unsigned* totalSize, unsigned style, int16_t x, int16_t y, int16_t cx,
+	                                        int16_t cy,
 	                                        const wchar_t* String);
-	static dialog_template* AddDlgControl(unsigned int* totalSize, dialog_template* dlgTemplate, __int16 idClass,
+	static dialog_template* AddDlgControl(unsigned int* totalSize, dialog_template* dlgTemplate, int16_t idClass,
 	                                      unsigned style,
-	                                      WORD id, __int16 x, __int16 y, __int16 cx, __int16 cy,
+	                                      WORD id, int16_t x, int16_t y, int16_t cx, int16_t cy,
 	                                      const wchar_t* String);
 	static void DestroySettingsDlgTemplate(LPCVOID pMem);
 	static int Settings_OnInitDialog(HWND hWnd, int wParam, MIXCONFIG* lpMixconfig);
@@ -215,8 +216,8 @@ private:
 	static int HasCurrentOutputFormat(MIXWAVE* lpMixWave);
 	static CHANNELNODE* GetChannelNode();
 	static void ResetWavePosIfNoChannelData();
-	static void cmixit(unsigned __int8* lpDest, unsigned __int8** rgWaveSrc, volume_struct* volumeArr, int iNumWaves,
-	                   unsigned __int16 length);
+	static void cmixit(uint8_t* lpDest, uint8_t** rgWaveSrc, volume_struct* volumeArr, int iNumWaves,
+	                   uint16_t length);
 	static LRESULT __stdcall WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 	static INT_PTR __stdcall SettingsDlgProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
@@ -226,8 +227,8 @@ private:
 	static CHANNELNODE* free_channel_nodes;
 	static unsigned char volume_table[11][256];
 	static int debug_flag;
-	static void (*cmixit_ptr)(unsigned __int8* lpDest, unsigned __int8** rgWaveSrc, volume_struct* volume,
-	                          int iNumWaves, unsigned __int16 length);
+	static void (*cmixit_ptr)(uint8_t* lpDest, uint8_t** rgWaveSrc, volume_struct* volume,
+	                          int iNumWaves, uint16_t length);
 	static HMODULE HModule;
 	static GLOBALS *Globals, *GlobalsActive;
 	static PCMWAVEFORMAT gpFormat;

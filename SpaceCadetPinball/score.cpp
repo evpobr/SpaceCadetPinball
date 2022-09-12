@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#include <cstdint>
+
 #include "score.h"
 #include "loader.h"
 #include "memory.h"
@@ -25,7 +28,7 @@ scoreStruct* score::create(LPCSTR fieldName, gdrv_bitmap8* renderBgBmp)
 		return nullptr;
 	score->Score = -9999;
 	score->BackgroundBmp = renderBgBmp;
-	auto shortArr = reinterpret_cast<__int16*>(partman::field_labeled(loader::loader_table, fieldName,
+	auto shortArr = reinterpret_cast<int16_t*>(partman::field_labeled(loader::loader_table, fieldName,
 	                                                                  datFieldTypes::ShortArray));
 	if (!shortArr)
 	{
@@ -65,7 +68,7 @@ void score::load_msg_font(LPCSTR lpName)
 	if (!resGlobal)
 		return;
 
-	auto rcData = static_cast<__int16*>(LockResource(resGlobal));
+	auto rcData = static_cast<int16_t*>(LockResource(resGlobal));
 
 	auto fontp = reinterpret_cast<score_msg_font_type*>(memory::allocate(sizeof(score_msg_font_type)));
 	msg_fontp = fontp;

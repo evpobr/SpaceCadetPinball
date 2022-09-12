@@ -1,6 +1,8 @@
 #pragma once
 
-enum class datFieldTypes : __int16
+#include <cstdint>
+
+enum class datFieldTypes : int16_t
 {
 	ShortValue = 0,
 	//, does not have the 32bits size value, but a 16bits value(see above).
@@ -56,7 +58,7 @@ struct datEntryData
 
 struct datGroupData
 {
-	__int16 EntryCount;
+	int16_t EntryCount;
 	datEntryData Entries[1];
 };
 
@@ -72,10 +74,10 @@ struct datFileStruct
 struct dat8BitBmpHeader
 {
 	char Unknown1;
-	__int16 Width;
-	__int16 Height;
-	__int16 XPosition;
-	__int16 YPosition;
+	int16_t Width;
+	int16_t Height;
+	int16_t XPosition;
+	int16_t YPosition;
 	int Size;
 	bmp8Flags Flags;
 
@@ -93,12 +95,12 @@ static_assert(sizeof(dat8BitBmpHeader) == 14, "Wrong size of dat8BitBmpHeader");
 #pragma pack(push, 1)
 struct __declspec(align(1)) dat16BitBmpHeader
 {
-	__int16 Width;
-	__int16 Height;
-	__int16 Stride;
+	int16_t Width;
+	int16_t Height;
+	int16_t Stride;
 	int Unknown0;
-	__int16 Unknown1_0;
-	__int16 Unknown1_1;
+	int16_t Unknown1_0;
+	int16_t Unknown1_1;
 };
 
 #pragma pack(pop)

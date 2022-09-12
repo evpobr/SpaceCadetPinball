@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#include <cstdint>
+
 #include "options.h"
 
 #include "fullscrn.h"
@@ -360,7 +363,7 @@ INT_PTR _stdcall options::KeyMapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 		{
 			short vk = *vkPtr;
 			auto vk2And = vk & 0x4000;
-			auto vkChar = static_cast<unsigned __int8>(vk);
+			auto vkChar = static_cast<uint8_t>(vk);
 			unsigned short maxVk;
 
 			if (vk2And)
@@ -521,7 +524,7 @@ INT_PTR _stdcall options::KeyMapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 }
 
 
-LPSTR options::get_vk_key_name(unsigned __int16 vk, LPSTR keyName)
+LPSTR options::get_vk_key_name(uint16_t vk, LPSTR keyName)
 {
 	LONG scanCode = MapVirtualKeyA(vk, MAPVK_VK_TO_VSC) << 16;
 	if (vk >= 0x21u && vk <= 0x2Eu)

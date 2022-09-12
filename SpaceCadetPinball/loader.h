@@ -1,4 +1,7 @@
 #pragma once
+
+#include <cstdint>
+
 #include "gdrv.h"
 #include "maths.h"
 #include "WaveMix.h"
@@ -65,7 +68,7 @@ public:
 	static int query_visual(int groupIndex, int groupIndexOffset, visualStruct* visual);
 	static char* query_name(int groupIndex);
 	static float* query_float_attribute(int groupIndex, int groupIndexOffset, int firstValue);
-	static __int16* query_iattribute(int groupIndex, int firstValue, int* arraySize);
+	static int16_t* query_iattribute(int groupIndex, int firstValue, int* arraySize);
 	static float play_sound(int soundIndex);
 	static datFileStruct* loader_table;
 private:

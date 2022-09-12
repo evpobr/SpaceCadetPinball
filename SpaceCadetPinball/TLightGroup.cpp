@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TLightGroup.h"
 
+#include <cstdint>
 
 #include "control.h"
 #include "loader.h"
@@ -19,7 +20,7 @@ TLightGroup::TLightGroup(TPinballTable* table, int groupIndex) : TPinballCompone
 	{
 		int count;
 		Timer1TimeDefault = *loader::query_float_attribute(groupIndex, 0, 903);
-		__int16* groupIndArr = loader::query_iattribute(groupIndex, 1027, &count);
+		int16_t* groupIndArr = loader::query_iattribute(groupIndex, 1027, &count);
 		for (int index = 0; index < count; ++groupIndArr)
 		{
 			auto comp = table->find_component(*groupIndArr);

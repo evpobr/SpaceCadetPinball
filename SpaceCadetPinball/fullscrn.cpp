@@ -1,4 +1,7 @@
 #include "pch.h"
+
+#include <cstdint>
+
 #include "fullscrn.h"
 #include "render.h"
 #include "winmain.h"
@@ -320,8 +323,8 @@ void fullscrn::fillRect(int right, int bottom)
 
 unsigned fullscrn::convert_mouse_pos(unsigned int mouseXY)
 {
-	unsigned __int16 x = mouseXY & 0xffFF - render::vscreen.XPosition;
-	unsigned __int16 y = (mouseXY >> 16) - render::vscreen.YPosition;
+	uint16_t x = mouseXY & 0xffFF - render::vscreen.XPosition;
+	uint16_t y = (mouseXY >> 16) - render::vscreen.YPosition;
 	return x | y << 16;
 }
 

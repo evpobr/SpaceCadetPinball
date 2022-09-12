@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 struct render_sprite_type_struct;
 struct component_control;
 class TPinballTable;
@@ -26,8 +28,8 @@ public:
 	void* operator new(size_t Size);
 	void operator delete(void* p);
 
-	__int8 UnusedBaseFlag;
-	__int8 ActiveFlag;
+	int8_t UnusedBaseFlag;
+	int8_t ActiveFlag;
 	int MessageField;
 	char* GroupName;
 	int Unknown4;

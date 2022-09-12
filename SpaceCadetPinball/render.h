@@ -3,7 +3,7 @@
 #include "maths.h"
 #include "zdrv.h"
 
-enum class VisualType : char
+enum class VisualType : int8_t
 {
 	None = 0,
 	Sprite = 1,
@@ -17,7 +17,7 @@ struct render_sprite_type_struct
 	zmap_header_type* ZMap;
 	char UnknownFlag;
 	VisualType VisualType;
-	__int16 Depth;
+	int16_t Depth;
 	rectangle_type BmpRectCopy;
 	int ZMapOffestY;
 	int ZMapOffestX;

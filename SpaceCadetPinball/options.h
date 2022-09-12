@@ -41,7 +41,7 @@ public:
 
 	static void keyboard();
 	static INT_PTR _stdcall KeyMapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
-	static LPSTR get_vk_key_name(unsigned __int16 vk, LPSTR keyName);
+	static LPSTR get_vk_key_name(uint16_t vk, LPSTR keyName);
 
 	static optionsStruct Options;
 private:
