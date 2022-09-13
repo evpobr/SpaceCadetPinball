@@ -132,6 +132,6 @@ add_executable(pinball WIN32
     Icon_1.ico
     splash_bitmap.bmp
 )
-target_link_libraries(pinball PRIVATE comctl32 htmlhelp winmm)
+target_link_libraries(pinball PRIVATE comctl32 ddraw htmlhelp winmm)
 target_precompile_headers(pinball PRIVATE pch.h)
 target_compile_features(pinball PRIVATE cxx_std_17)

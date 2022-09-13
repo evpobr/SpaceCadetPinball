@@ -1,4 +1,7 @@
 #pragma once
+
+#include <ddraw.h>
+
 #include "gdrv.h"
 #include "maths.h"
 #include "zdrv.h"
@@ -42,6 +45,11 @@ public:
 	static gdrv_bitmap8 vscreen, *background_bitmap, ball_bitmap[20];
 	static zmap_header_type zscreen;
 	static HBITMAP vscreen32_bmp;
+	static IDirectDraw7 *lpDD;
+	static IDirectDrawSurface7* lpDDSFront;
+	static IDirectDrawSurface7* lpDDSBack;
+	static IDirectDrawClipper* lpDDClipper;
+	static BOOL fDDrawInitialized;
 
 	static void init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height);
 	static void uninit();

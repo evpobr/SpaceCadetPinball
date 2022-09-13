@@ -1,9 +1,10 @@
+#include <initguid.h>
 #include "render.h"
+
+#include <windowsx.h>
 
 #include "memory.h"
 #include "winmain.h"
-
-#include <windowsx.h>
 
 int render::blit = 0;
 int render::many_dirty, render::many_sprites, render::many_balls;
@@ -16,6 +17,11 @@ gdrv_bitmap8 render::vscreen, *render::background_bitmap, render::ball_bitmap[20
 zmap_header_type render::zscreen;
 HDC render::vscreen_dc;
 HBITMAP render::vscreen32_bmp;
+IDirectDraw7* render::lpDD;
+IDirectDrawSurface7* render::lpDDSFront;
+IDirectDrawSurface7* render::lpDDSBack;
+IDirectDrawClipper* render::lpDDClipper;
+BOOL render::fDDrawInitialized;
 
 void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int height)
 {
@@ -49,6 +55,48 @@ void render::init(gdrv_bitmap8* bmp, float zMin, float zScaler, int width, int h
 	bmi.bmiHeader.biBitCount = 32;
 	bmi.bmiHeader.biCompression = BI_RGB;
 	vscreen32_bmp = CreateDIBitmap(GetDC(nullptr), &bmi.bmiHeader, 0, nullptr, &bmi, DIB_RGB_COLORS);
+
+	HRESULT hr = DirectDrawCreateEx(nullptr, (LPVOID*)&lpDD, IID_IDirectDraw7, nullptr);
+	if (SUCCEEDED(hr))
+	{
+		hr = lpDD->SetCooperativeLevel(winmain::hwnd_frame, DDSCL_NORMAL);
+	}
+	if (SUCCEEDED(hr))
+	{
+		DDSURFACEDESC2 ddsd{};
+		ddsd.dwSize = sizeof(DDSURFACEDESC2);
+		ddsd.dwFlags = DDSD_CAPS;
+		ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+
+		hr = lpDD->CreateSurface(&ddsd, &lpDDSFront, nullptr);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		DDSURFACEDESC2 ddsd{};
+		ddsd.dwSize = sizeof( ddsd );
+		ddsd.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT;
+		ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
+		ddsd.dwWidth = width;
+		ddsd.dwHeight = height;
+
+		hr = lpDD->CreateSurface(&ddsd, &lpDDSBack, nullptr);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		hr = lpDD->CreateClipper(0, &lpDDClipper, nullptr);
+		if (SUCCEEDED(hr))
+		{
+			hr = lpDDClipper->SetHWnd(0, winmain::hwnd_frame);
+		}
+		if (SUCCEEDED(hr))
+		{
+			hr = lpDDSFront->SetClipper(lpDDClipper);
+		}
+	}
+
+	fDDrawInitialized = SUCCEEDED(hr) ? TRUE: FALSE;
 
 	gdrv_bitmap8* ballBmp = ball_bitmap;
 	while (ballBmp < &ball_bitmap[20])
@@ -86,6 +134,24 @@ void render::uninit()
 	many_sprites = 0;
 	many_dirty = 0;
 	many_balls = 0;
+
+	if (lpDDSBack)
+	{
+		lpDDSBack->Release();
+		lpDDSBack = nullptr;
+	}
+	if (lpDDSFront)
+	{
+		lpDDSFront->SetClipper(nullptr);
+		lpDDClipper = nullptr;
+		lpDDSFront->Release();
+		lpDDSFront = nullptr;
+	}
+	if (lpDD)
+	{
+		lpDD->Release();
+		lpDD = nullptr;
+	}
 }
 
 void render::update()

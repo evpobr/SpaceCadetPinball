@@ -200,7 +200,8 @@ void gdrv::blit(HDC vdc, int xSrc, int ySrcOff, int xDest, int yDest, int DestWi
 
 void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 {
-	HDC dc = winmain::_GetDC(hwnd);
+	HDC dc = nullptr;
+	HRESULT hr = render::lpDDSBack->GetDC(&dc);
 	if (dc)
 	{
 		HDC vscreen32_dc = CreateCompatibleDC(winmain::_GetDC(hwnd));
@@ -231,7 +232,39 @@ void gdrv::blat(gdrv_bitmap8* bmp, int xDest, int yDest)
 			SelectBitmap(vscreen32_dc, vscreen32_bmp_old);
 			DeleteDC(vscreen32_dc);
 		}
-		ReleaseDC(hwnd, dc);
+		hr = render::lpDDSBack->ReleaseDC(dc);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		// calculate the client rect in screen coordinates
+		RECT rect;
+		ZeroMemory(&rect, sizeof( rect ));
+
+		// get the client area
+		GetClientRect(hwnd, &rect);
+
+		// copy the rect's data into two points
+		POINT p1;
+		POINT p2;
+
+		p1.x = rect.left;
+		p1.y = rect.top;
+		p2.x = rect.right;
+		p2.y = rect.bottom;
+
+		// convert it to screen coordinates (like DirectDraw uses)
+		ClientToScreen(hwnd, &p1);
+		ClientToScreen(hwnd, &p2);
+
+		// copy the two points' data back into the rect
+		rect.left   = p1.x;
+		rect.top    = p1.y;
+		rect.right  = p2.x;
+		rect.bottom = p2.y;
+
+		// blit the back buffer to our window's position
+		hr = render::lpDDSFront->Blt(&rect, render::lpDDSBack, NULL, DDBLT_WAIT, NULL);
 	}
 }
 

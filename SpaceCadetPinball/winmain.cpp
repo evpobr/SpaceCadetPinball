@@ -158,7 +158,6 @@ int winmain::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	lstrcpyA(windowName, pinball::get_rc_string(38, 0));
 	windowHandle = CreateWindowExA(0, windowClass, windowName, 0x3CA0000u, 0, 0, 640, 480, nullptr, nullptr, hInstance,
 	                               nullptr);
-	hwnd_frame = windowHandle;
 	if (!windowHandle)
 	{
 		PostQuitMessage(0);
@@ -312,6 +311,7 @@ LRESULT CALLBACK winmain::message_handler(HWND hWnd, UINT Msg, WPARAM wParam, LP
 		break;
 	case WM_CREATE:
 		{
+			hwnd_frame = hWnd;
 			RECT rect{};
 			++memory::critical_allocation;
 
